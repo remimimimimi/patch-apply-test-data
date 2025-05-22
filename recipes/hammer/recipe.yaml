@@ -1,0 +1,88 @@
+schema_version: 1
+
+context:
+  name: hammer
+  version: 1.4.1
+
+package:
+  name: ${{ name|lower }}
+  version: ${{ version }}
+
+source:
+  url: https://gitlab.com/mpapucci/Hammer/-/archive/v${{ version }}/Hammer-v${{ version }}.tar.gz
+  sha256: b95e192727aa95ac736a269e84457adbdde3e85db15082da4129f4ed4c018c45
+  patches:
+    - 0001-Fix-support-for-newer-GCC.patch
+
+build:
+  number: 1
+  skip: win
+
+requirements:
+  build:
+    - ${{ compiler('c') }}
+    - ${{ stdlib("c") }}
+    - ${{ compiler('cxx') }}
+    - cmake
+    - make
+    - pkg-config
+  host:
+    - python
+    - root_base
+    - libboost-devel
+    - hepmc2
+    - yaml-cpp
+    - numpy
+    - matplotlib-base
+    - cython <3
+    - cymove
+    - setuptools
+  run:
+    - python
+    - yaml-cpp
+    - hepmc2
+    - matplotlib-base
+  run_constraints: run_constrained
+
+tests:
+  - python:
+      imports:
+        - hammer
+      pip_check: false
+  - script:
+      - cd $CONDA_PREFIX/share/Hammer/examples
+      - ./demo01
+      - ./demo01card
+      - ./demo01root
+      - ./demo02
+      - ./demo02root
+      - ./demo03
+      - ./demo03root
+      - ./demo04
+      - ./demo04root
+      - ./demo04root2
+      - ./demo05
+      - ./demo07
+      - ./demo08
+      - ./demo09
+      - ./demo10
+      # Seems to be broken
+      # - python demo03.py
+      # - python demo04.py
+
+about:
+  license: GPL-3.0-only
+  license_file: COPYING
+  summary: Helicity Amplitude Module for Matrix Element Reweighting
+  description: |
+    A C++ software library, designed to provide fast and efficient reweighting
+    of large Monte Carlo datasets containing semileptonic b-Hadron decays to
+    any desired New Physics, or to any description of the hadronic matrix
+    elements. See the HAMMER website for more information.
+  homepage: https://hammer.physics.lbl.gov/
+  repository: https://gitlab.com/mpapucci/Hammer
+  documentation: https://hammer.physics.lbl.gov/HammerManual.pdf
+
+extra:
+  recipe-maintainers:
+    - chrisburr

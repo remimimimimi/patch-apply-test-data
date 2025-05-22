@@ -1,0 +1,72 @@
+schema_version: 1
+
+context:
+  name: yarr
+  version: "1.5.4"
+
+package:
+  name: ${{ name|lower }}
+  version: ${{ version }}
+
+source:
+  url: https://gitlab.cern.ch/yarr/${{ name }}/-/archive/v${{ version }}/${{ name }}-v${{ version }}.tar.gz
+  sha256: 18b14afd1eaa82198b896023b87aa140bd67938ae38646361d0bdada9eca8ed8
+  patches:
+    - patches/0002-patch-strip-debug.patch
+    - patches/0003-patch-dependency-resolution-for-osx.patch
+
+build:
+  number: 0
+  script:
+    - if: osx
+      then: CXXFLAGS="${CXXFLAGS} -D_LIBCPP_DISABLE_AVAILABILITY" cmake ${CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=$PREFIX -S "${SRC_DIR}" -B build
+    - if: linux
+      then: CXXFLAGS="${CXXFLAGS}" cmake ${CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=$PREFIX -S "${SRC_DIR}" -B build
+    - cmake --build build --clean-first --parallel="${CPU_COUNT}"
+    - cmake --install build
+    - mkdir -p $PREFIX/share/yarr
+    - rsync -ravz $SRC_DIR/configs $PREFIX/share/yarr
+    - find $PREFIX/share/yarr/configs -name '*.json' -type f -print -exec sed -i "s@\"configs/@\"$PREFIX/share/yarr/configs/@g" {} +
+    - cat $PREFIX/share/yarr/configs/controller/emuCfg_rd53a.json
+  skip:
+    - win
+    - osx
+
+requirements:
+  build:
+    - ${{ stdlib("c") }}
+    - ${{ compiler("cxx") }}
+    - cmake
+    - make
+    - rsync
+    - sed
+  run:
+    - gnuplot
+
+tests:
+  - script:
+      - test -f $PREFIX/bin/scanConsole
+      - test -f $PREFIX/share/yarr/configs/controller/emuCfg_rd53a.json
+      - cat $PREFIX/share/yarr/configs/controller/emuCfg_rd53a.json
+
+      - scanConsole -h
+      - scanConsole -k
+      - if: linux
+        then: scanConsole -r $PREFIX/share/yarr/configs/controller/emuCfg_rd53a.json -c $PREFIX/share/yarr/configs/connectivity/example_rd53a_setup.json -s $PREFIX/share/yarr/configs/scans/rd53a/std_digitalscan.json -p
+
+about:
+  license: GPL-2.0-or-later
+  license_file: LICENSE.txt
+  summary: 'Yet Another Rapid Readout'
+  description: |
+    YARR is a readout system based around the concept of moving intelligence
+    from the FPGA firmware into the host computer software. The role of the FPGA is
+    the one of a reconfigurable I/O interface and not anymore the one of a hardware
+    accelerator. YARR supports multiple types of FPGA platforms and readout chips.
+  homepage: https://gitlab.cern.ch/YARR/YARR
+  repository: https://gitlab.cern.ch/YARR/YARR
+  documentation: https://yarr.web.cern.ch/yarr/
+
+extra:
+  recipe-maintainers:
+    - kratsg

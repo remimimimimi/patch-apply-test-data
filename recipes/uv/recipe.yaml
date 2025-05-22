@@ -1,0 +1,58 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/prefix-dev/recipe-format/main/schema.json
+schema_version: 1
+
+context:
+  version: "0.7.4"
+
+package:
+  name: uv
+  version: ${{ version }}
+
+source:
+  url: https://github.com/astral-sh/uv/releases/download/${{ version }}/source.tar.gz
+  sha256: 897a1e952961db5ac802abacd99c2f2aaa5622c8eee9d1843eb1683ab1e513e8
+  patches:
+    - 0000-no-link-static-vc-runtime.patch
+
+build:
+  number: 0
+  script:
+    file: build-uv
+    env:
+      # This env var specifies the base 2 log of the allocator page size
+      JEMALLOC_SYS_WITH_LG_PAGE: ${{ "16" if target_platform == "linux-aarch64" or target_platform == "linux-ppc64le" }}
+
+requirements:
+  build:
+    - ${{ compiler("c") }}
+    - ${{ compiler("cxx") }}
+    - ${{ compiler("rust") }}
+    - ${{ stdlib("c") }}
+    - cargo-bundle-licenses
+    - cmake
+    - make
+
+tests:
+  - requirements:
+      run:
+        - if: win
+          then: m2-grep
+    script:
+      - uv --version
+      - uv --help
+      - uv --version | grep -iE "${{ version | replace('.', '\\.') }}"
+
+about:
+  homepage: https://github.com/astral-sh/uv
+  license: Apache-2.0 OR MIT
+  license_file:
+    - LICENSE-APACHE
+    - LICENSE-MIT
+    - THIRDPARTY.yml
+  summary: An extremely fast Python package installer and resolver, written in Rust.
+  documentation: https://docs.astral.sh/uv
+
+extra:
+  recipe-maintainers:
+    - charliermarsh
+    - bollwyvl

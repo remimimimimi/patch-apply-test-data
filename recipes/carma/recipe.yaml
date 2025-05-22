@@ -1,0 +1,51 @@
+context:
+  name: carma
+  version: 0.8.0
+
+package:
+  name: ${{ name|lower }}
+  version: ${{ version }}
+
+source:
+  url: https://github.com/RUrlus/carma/archive/v${{ version }}.tar.gz
+  sha256: a404687fb7c41880794cb215cb678bc59cdb0ecdf8baa4336103e7834ba6750a
+  patches:
+    - patch-include-dir.patch
+
+build:
+  number: 1
+
+requirements:
+  build:
+    - ${{ compiler('c') }}
+    - ${{ stdlib('c') }}
+    - ${{ compiler('cxx') }}
+    - cmake
+    - make
+
+tests:
+  - script:
+      - if: unix
+        then:
+          - test -f ${PREFIX}/include/carma/carma
+  - package_contents:
+      include:
+        - carma/carma
+
+about:
+  homepage: https://github.com/RUrlus/carma
+  summary: A C++ header only library providing conversions between Numpy arrays and Armadillo matrices.
+  description: |
+    CARMA provides fast bidirectional conversions between Numpy arrays and
+    Armadillo matrices, vectors and cubes, much like RcppArmadillo does for R
+    and Armadillo.
+  license: Apache-2.0
+  license_file: LICENSE
+  documentation: https://carma.readthedocs.io
+  repository: https://github.com/RUrlus/carma
+
+extra:
+  recipe-maintainers:
+    - zklaus
+    - timkpaine
+    - wolfv

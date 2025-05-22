@@ -1,0 +1,85 @@
+context:
+  name: highspy
+  version: "1.10.0"
+
+package:
+  name: ${{ name|lower }}
+  version: ${{ version }}
+
+source:
+  # url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/highspy-{{ version }}.tar.gz
+  url: https://github.com/ERGO-Code/HiGHS/archive/refs/tags/v${{ version }}.tar.gz
+  sha256: cf29873b894133bac111fc45bbf10989b6c5c041992fcd10e31222253e371a4c
+  patches:
+    - patches/0001-Got-error-about-missing-std-tolower-on-MSVC.patch
+
+build:
+  number: 0
+  script: ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+
+requirements:
+  build:
+    - if: build_platform != target_platform
+      then: python
+    - if: build_platform != target_platform
+      then: cross-python_${{ target_platform }}
+    - if: build_platform != target_platform
+      then: numpy
+    - ${{ compiler('c') }}
+    - ${{ stdlib('c') }}
+    - ${{ compiler('cxx') }}
+    - cmake
+    - if: unix
+      then: make
+  host:
+    - python
+    - pip
+    - scikit-build-core
+    - numpy
+    - pybind11
+  run:
+    - python
+    - numpy
+  ignore_run_exports:
+    from_package:
+      - numpy
+
+tests:
+  - python:
+      imports:
+        - highspy
+      pip_check: true
+  - script:
+      - python -m pytest tests/test_highspy.py
+    requirements:
+      run:
+        - python
+        - pytest
+    files:
+      source:
+        - tests/
+
+about:
+  summary: High performance serial and parallel solver for large scale sparse linear optimization problems
+  description: |
+    HiGHS is a high performance serial and parallel solver for large scale
+    sparse linear optimization problems of the form
+
+    min ½ xᵀ Q x + cᵀ x     s.t. L ≤ Ax ≤ U; l ≤ x ≤ u
+
+    where Q must be positive semi-definite and, if Q is zero, there may be a
+    requirement that some of the variables take integer values. Thus HiGHS can
+    solve linear programming (LP) problems, convex quadratic programming (QP)
+    problems, and mixed integer programming (MIP) problems. It is mainly written in
+    C++, but also has some C. It has been developed and tested on various Linux,
+    MacOS and Windows installations.
+  license: MIT
+  license_file: LICENSE.txt
+  homepage: https://github.com/ERGO-Code/HiGHS
+  repository: https://github.com/ERGO-Code/HiGHS
+  documentation: https://ergo-code.github.io/HiGHS/stable/
+
+extra:
+  recipe-maintainers:
+    - galabovaa
+    - adamant

@@ -1,0 +1,54 @@
+context:
+  version: "4.0.2"
+
+package:
+  name: fish
+  version: ${{ version }}
+
+source:
+  url: https://github.com/fish-shell/fish-shell/releases/download/${{ version }}/fish-${{ version }}.tar.xz
+  sha256: 6e1ecdb164285fc057b2f35acbdc20815c1623099e7bb47bbfc011120adf7e83
+  patches:
+    - patches/gettext-cstr-from-bytes-until-nul.patch
+
+build:
+  number: 1
+  script: build.sh
+  skip:
+    - win
+
+requirements:
+  build:
+    - cmake
+    - make
+    - ${{ compiler('rust') }}
+    - cargo-bundle-licenses
+    - ${{ compiler('c') }}
+    - ${{ stdlib("c") }}
+    - gettext
+  host:
+    - ncurses
+    - pcre2
+  run: []
+
+tests:
+  - script: |
+      fish -v
+      fish_indent -v
+
+about:
+  homepage: https://fishshell.com
+  license: GPL-2.0-only
+  license_file:
+    - THIRDPARTY.yml
+    - COPYING
+  summary: User-friendly command-line shell for UNIX-like operating systems
+  description: |
+    Fish is a smart and user-friendly command line shell for macOS, Linux, and the rest of the family.
+  repository: https://github.com/fish-shell/fish-shell
+
+extra:
+  recipe-maintainers:
+    - anjos
+    - chrisburr
+    - mdraw

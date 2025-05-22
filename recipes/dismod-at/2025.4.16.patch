@@ -1,0 +1,12 @@
+diff --git a/python/pyproject.toml b/python/pyproject.toml
+index db3e3e0c8..136f2d2c3 100644
+--- a/python/pyproject.toml
++++ b/python/pyproject.toml
+@@ -49,7 +49,3 @@ package_dir   = 'at_cascade'
+ 
+ # dismodat.py
+ # The program bin/dismod_at is installed by ../devel/CMakeLists.txt
+-
+-# dismod-at
+-[project.scripts]
+-dismod-at = 'dismod_at:main'

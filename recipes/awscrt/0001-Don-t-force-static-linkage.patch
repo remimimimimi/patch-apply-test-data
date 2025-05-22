@@ -1,0 +1,33 @@
+From 62805c6d4643911af084cc5b8334457cbe527914 Mon Sep 17 00:00:00 2001
+From: "Uwe L. Korn" <uwe.korn@quantco.com>
+Date: Tue, 25 Apr 2023 14:33:20 +0200
+Subject: [PATCH] Don't force static linkage
+
+---
+ setup.py | 13 -------------
+ 1 file changed, 13 deletions(-)
+
+diff --git a/setup.py b/setup.py
+index 6951b50..3a0addf 100644
+--- a/setup.py
++++ b/setup.py
+@@ -348,19 +348,6 @@ def awscrt_ext():
+         extra_link_args += ['-framework', 'Security']
+ 
+     else:  # unix
+-        if forcing_static_libs():
+-            # linker will prefer shared libraries over static if it can find both.
+-            # force linker to choose static variant by using
+-            # "-l:libaws-c-common.a" syntax instead of just "-laws-c-common".
+-            #
+-            # This helps AWS developers creating Lambda applications from Brazil.
+-            # In Brazil, both shared and static libs are available.
+-            # But Lambda requires all shared libs to be explicitly packaged up.
+-            # So it's simpler to link them in statically and have less runtime dependencies.
+-            #
+-            # Don't apply this trick to dependencies that are always on the OS (e.g. librt)
+-            libraries = [':lib{}.a'.format(x) for x in libraries]
+-
+         # OpenBSD doesn't have librt; functions are found in libc instead.
+         if not sys.platform.startswith('openbsd'):
+             libraries += ['rt']

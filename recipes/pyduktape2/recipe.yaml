@@ -1,0 +1,69 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/prefix-dev/recipe-format/main/schema.json
+schema_version: 1
+
+context:
+  version: 0.5.0
+
+package:
+  name: pyduktape2
+  version: ${{ version }}
+
+source:
+  - url: https://pypi.org/packages/source/p/pyduktape2/pyduktape2-${{ version }}.tar.gz
+    sha256: b541e92e4c97017737ed05295f958686771cf640639f91e100279b82f69a5dc4
+    target_directory: dist
+  - url: https://github.com/phith0n/pyduktape2/archive/refs/tags/${{ version }}.tar.gz
+    sha256: 396c189cd21bf109d065142b900ea351a1e0061e10a301a402cd0f7ced2fe6eb
+    target_directory: src
+    patches:
+      - 001-no-import-tests.patch
+
+build:
+  number: 0
+  skip: (win or osx) and match(python, "3.11.*")
+  script:
+    - cd src
+    - ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation --disable-pip-version-check
+
+requirements:
+  build:
+    - ${{ compiler("c") }}
+    - ${{ stdlib("c") }}
+    - if: build_platform != target_platform
+      then:
+        - python
+        - cross-python_${{ target_platform }}
+        - cython >=3
+  host:
+    - cython >=3
+    - pip
+    - python
+    - setuptools
+  run:
+    - python
+
+tests:
+  - python:
+      imports: pyduktape2
+  - files:
+      source:
+        - src/tests/
+    requirements:
+      run:
+        - pytest
+    script:
+      - cd src/tests
+      - pytest -vv --tb=long --color=yes
+
+about:
+  summary: Python integration for the Duktape Javascript interpreter
+  license: GPL-2.0-or-later
+  license_file:
+    - dist/LICENSE.txt
+    - dist/COPYRIGHT.txt
+    - dist/vendor/LICENSE.txt
+  homepage: https://github.com/phith0n/pyduktape2
+
+extra:
+  recipe-maintainers:
+    - bollwyvl

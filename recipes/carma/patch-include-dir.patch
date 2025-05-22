@@ -1,0 +1,15 @@
+diff --git a/cmake/carmaConfig.cmake.in b/cmake/carmaConfig.cmake.in
+index ac90ea5..ccec774 100644
+--- a/cmake/carmaConfig.cmake.in
++++ b/cmake/carmaConfig.cmake.in
+@@ -45,8 +45,8 @@ ENDIF()
+ 
+ SET(_SUPPORTED_COMPONENTS "carma" "headers")
+ 
+-SET(carma_INCLUDE_DIR "${_IMPORT_PREFIX}/@CARMA_INCLUDE_INSTALL_DIR@")
+-SET(carma_INCLUDE_DIRS "${_IMPORT_PREFIX}/@CARMA_INCLUDE_INSTALL_DIR@")
++SET(carma_INCLUDE_DIR "@CARMA_INCLUDE_INSTALL_DIR@")
++SET(carma_INCLUDE_DIRS "@CARMA_INCLUDE_INSTALL_DIR@")
+ set(carma_LIBRARY "")
+ 
+ FOREACH(_comp ${carma_FIND_COMPONENTS})

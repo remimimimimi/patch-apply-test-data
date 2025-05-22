@@ -1,0 +1,61 @@
+# Because upstream doesn't produce releases despite active development mostly focused
+# on bugfixes and compatibility with newer toolchains, we provide date based .post
+# releases.
+# To update, find an appropriate commit in upstream, note the commit hash and date,
+# find the checksum of the associated archive tarball (see source url below),
+# and use this information to update the following three lines.
+context:
+  name: rapidjson
+  version: 1.1.0.post20240409
+  commit_hash: ab1842a2dae061284c0a62dca1cc6d5e7e37e346
+  sha256: 39f96f17b40f7201042c9b45d6444cb7eae1b7adfb7455412a86f6140450d32d
+
+package:
+  name: ${{ name|lower }}
+  version: ${{ version }}
+
+source:
+  url: https://github.com/Tencent/rapidjson/archive/${{ commit_hash }}.tar.gz
+  sha256: ${{ sha256 }}
+  patches:
+    - 2193.patch
+
+build:
+  number: 2
+
+requirements:
+  build:
+    - cmake
+    - ninja
+    - ${{ stdlib('c') }}
+    - ${{ compiler('c') }}
+    - ${{ compiler('cxx') }}
+
+tests:
+  - package_contents:
+      files:
+        - if: win
+          then:
+            - Library/cmake/RapidJSONConfig.cmake
+            - Library/cmake/RapidJSONConfigVersion.cmake
+        - if: unix
+          then:
+            - lib/cmake/RapidJSON/RapidJSONConfig.cmake
+            - lib/cmake/RapidJSON/RapidJSONConfigVersion.cmake
+      include: 
+        - rapidjson/rapidjson.h
+  
+about:
+  summary: A fast JSON parser/generator for C++ with both SAX/DOM style API
+  license: MIT
+  license_file: license.txt
+  homepage: https://github.com/Tencent/rapidjson
+
+extra:
+  recipe-maintainers:
+    - wesm
+    - SylvainCorlay
+    - JohanMabille
+    - xhochy
+    - zklaus
+    - baszalmstra

@@ -1,0 +1,66 @@
+context:
+  name: neuromorphic-drivers
+  version: 0.13.3
+
+package:
+  name: ${{ name|lower }}
+  version: ${{ version }}
+
+source:
+  url: https://pypi.io/packages/source/${{ name[0] }}/${{ name }}/neuromorphic_drivers-${{ version }}.tar.gz
+  sha256: 0017ed5716d2deed7f2bbd2832bab715fbb0dffa4fee53fd407ebb21726bc31d
+  patches:
+    - 2.patch
+
+build:
+  number: 2
+  skip: win
+  script:
+    - cargo-bundle-licenses --format yaml --output THIRDPARTY.yml
+    - ${{ PYTHON }} -m pip install . --no-deps --ignore-installed -vv
+  python:
+    entry_points:
+      - neuromorphic-drivers-install-udev-rules = neuromorphic_drivers:install_udev_rules_program
+      - ndls = neuromorphic_drivers:print_device_list
+
+requirements:
+  build:
+    - ${{ compiler('c') }}
+    - ${{ stdlib("c") }}
+    - ${{ compiler('rust') }}
+    - if: build_platform != target_platform
+      then:
+        - python
+        - cross-python_${{ target_platform }}
+        - crossenv
+        - maturin >=1.2.3,<2
+    - cmake
+    - if: unix
+      then: make
+    - cargo-bundle-licenses
+  host:
+    - python
+    - maturin >=1.2.3,<2
+    - numpy
+    - pip
+  run:
+    - python
+    - numpy
+
+tests:
+  - python:
+      imports:
+        - neuromorphic_drivers
+      pip_check: true
+
+about:
+  summary: Neuromorphic devices drivers
+  license: MIT
+  license_file:
+    - LICENSE
+    - THIRDPARTY.yml
+  homepage: https://github.com/neuromorphicsystems/neuromorphic-rs
+
+extra:
+  recipe-maintainers:
+    - Tobias-Fischer
