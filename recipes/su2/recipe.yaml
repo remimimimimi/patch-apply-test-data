@@ -1,0 +1,60 @@
+schema_version: 1
+
+context:
+  name: su2
+  version: "8.2.0"
+
+package:
+  name: ${{ name }}
+  version: ${{ version }}
+
+source:
+  url: https://github.com/su2code/SU2/archive/refs/tags/v${{ version }}.tar.gz
+  sha256: d35922914028a03f3b1cd04763e5302d1023f7790a1d2e4a6b091eb3b12d6944
+  patches:
+    - su2-meson.patch
+
+build:
+  number: 0
+  skip: win or osx or match(python, ">=3.12")
+
+requirements:
+  build:
+    - make
+    - ${{ stdlib('c') }}
+    - ${{ compiler('c') }}
+    - ${{ compiler('cxx') }}
+    - pkg-config
+    - ccache
+    - swig
+  host:
+    - python
+    - mpi4py
+    - openblas
+    - openmpi
+    - zlib
+  run:
+    - python
+    - libopenblas
+    - openmpi
+
+tests:
+  - script:
+      - SU2_CFD --help
+      # The following items have no `--help` and require config file to be run
+      - test -x ${PREFIX}/bin/SU2_DEF
+      - test -x ${PREFIX}/bin/SU2_DOT
+      - test -x ${PREFIX}/bin/SU2_GEO
+      - test -x ${PREFIX}/bin/SU2_SOL
+
+about:
+  license: GPL-2.0-or-later
+  license_file: LICENSE.md
+  summary: An Open-Source Suite for Multiphysics Simulation and Design
+  homepage: https://su2code.github.io
+  repository: https://github.com/su2code/SU2
+  documentation: https://su2code.github.io/docs_v7/home/
+
+extra:
+  recipe-maintainers:
+    - martin-g

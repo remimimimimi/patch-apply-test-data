@@ -1,0 +1,75 @@
+context:
+  name: docling-parse
+  version: "4.0.1"
+
+package:
+  name: ${{ name|lower }}
+  version: ${{ version }}
+
+source:
+  url: https://github.com/DS4SD/docling-parse/archive/refs/tags/v${{ version }}.zip
+  sha256: 653482b4d80086e78082e9cd8975353108d43f53d1ce54398c4d29670317c108
+  patches:
+    - fix-utfcpp.patch
+
+build:
+  number: 0
+  skip: win
+  script:
+    - export USE_SYSTEM_DEPS="on"
+    - ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+
+requirements:
+  build:
+    - if: build_platform != target_platform
+      then:
+        - python
+        - cross-python_${{ target_platform }}
+        - pybind11 >=2.13.1
+
+    - ${{ compiler('cxx') }}
+    - ${{ compiler('c') }}
+    - ${{ stdlib("c") }}
+    - cmake
+    - ${{ "make" if unix else "ninja" }}
+    - pkg-config
+  host:
+    # build tools
+    - python
+    - poetry-core
+    - pybind11 >=2.13.1
+    - pip
+    # libraries
+    - cxxopts
+    - loguru-cpp
+    - nlohmann_json
+    - utfcpp
+    - libjpeg-turbo
+    - qpdf <12
+    - zlib
+  run:
+    - python
+    - tabulate >=0.9.0,<1.0.0
+    - ${{ "pywin32 >=305" if win }}
+    - pillow >=10.0.0,<12.0.0
+    - pydantic >=2.0.0,<3.0.0
+    - docling-core >=2.23.0,<3.0.0
+
+tests:
+  - python:
+      imports:
+        - docling_parse
+      pip_check: true
+
+about:
+  summary: Simple package to extract text with coordinates from programmatic PDFs
+  license: BSD-3-Clause AND MIT
+  license_file:
+    - LICENSE
+    - docling_parse/pdf_resources_v2/cmap-resources/LICENSE.md
+    - docling_parse/pdf_resources/cmap-resources/LICENSE.md
+  homepage: https://github.com/docling-project/docling-parse
+
+extra:
+  recipe-maintainers:
+    - hadim

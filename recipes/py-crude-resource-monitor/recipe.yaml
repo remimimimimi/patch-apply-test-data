@@ -1,0 +1,47 @@
+context:
+  name: py-crude-resource-monitor
+  version: "0.2.1"
+
+package:
+  name: ${{ name|lower }}
+  version: ${{ version }}
+
+source:
+  url: https://github.com/I-Al-Istannen/${{ name }}/archive/refs/tags/v${{ version }}.tar.gz
+  sha256: 400ddf322de6de21008a6dce2fd7b02f517f58d58c0d328a865bf82740cc1944
+  patches:
+    - if: win
+      then: 0001-pnpm-bat.patch
+
+build:
+  number: 0
+
+requirements:
+  build:
+    - pnpm
+    - pnpm-licenses
+    - ${{ compiler('rust') }}
+    - ${{ compiler('c') }}
+    - ${{ stdlib('c') }}
+    - cargo-bundle-licenses
+  host:
+    - if: linux
+      then:
+        - libunwind
+
+tests:
+  - script:
+      - py-crude-resource-monitor --help
+
+about:
+  homepage: https://github.com/I-Al-Istannen/${{ name }}
+  summary: A memory and cpu utilization monitor that correlates the data with Python stacktraces. Supports multiprocessing.
+  license: MIT
+  license_file:
+    - LICENSE
+    - THIRDPARTY.yml
+    - THIRDPARTY-frontend.yml
+
+extra:
+  recipe-maintainers:
+    - pavelzw

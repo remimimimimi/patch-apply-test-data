@@ -1,0 +1,35 @@
+From 5059dde787da8aae7848a0101b23aeec9b950a42 Mon Sep 17 00:00:00 2001
+From: Aikawa Yataro <aikawayataro@protonmail.com>
+Date: Wed, 16 Aug 2023 16:58:51 +0200
+Subject: [PATCH] CMakeLists: include path fix + compatibility.
+
+---
+ CMakeLists.txt           | 2 +-
+ RapidJSONConfig.cmake.in | 4 ++++
+ 2 files changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 603341517..06b4c8d5c 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -198,7 +198,7 @@ install(FILES readme.md
+ # Add an interface target to export it
+ add_library(RapidJSON INTERFACE)
+ 
+-target_include_directories(RapidJSON INTERFACE $<INSTALL_INTERFACE:include/rapidjson>)
++target_include_directories(RapidJSON INTERFACE $<INSTALL_INTERFACE:include>)
+ 
+ install(DIRECTORY include/rapidjson
+     DESTINATION "${INCLUDE_INSTALL_DIR}"
+diff --git a/RapidJSONConfig.cmake.in b/RapidJSONConfig.cmake.in
+index a8ca78f7b..0ee1d9d3b 100644
+--- a/RapidJSONConfig.cmake.in
++++ b/RapidJSONConfig.cmake.in
+@@ -17,3 +17,7 @@ get_filename_component(RapidJSON_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+ get_target_property(RapidJSON_INCLUDE_DIR RapidJSON INTERFACE_INCLUDE_DIRECTORIES)
+ 
+ set( RapidJSON_INCLUDE_DIRS ${RapidJSON_INCLUDE_DIR} )
++
++if(NOT TARGET rapidjson)
++  add_library(rapidjson ALIAS RapidJSON)
++endif()

@@ -1,0 +1,57 @@
+schema_version: 1
+
+context:
+  name: cuda_histogram
+  version: 0.1.1
+
+package:
+  name: ${{ name|lower }}
+  version: ${{ version }}
+
+source:
+  url: https://pypi.org/packages/source/${{ name[0] }}/${{ name }}/${{ name }}-${{ version }}.tar.gz
+  sha256: 3089502c63f7fc1e26a81ca7f5a307ad14c01101f35b91b92dc2a56ef4a4bf38
+  patches:
+    # Patch `pyproject.toml`'s requirement on `cupy-cuda12x` to `cupy` to fix `pip check`
+    - cupy.patch
+
+build:
+  # linux-ppc64le is not supported by CuPy on Python 3.13
+  # https://github.com/conda-forge/cupy-feedstock/issues/299
+  number: 1
+  skip: win or osx or (ppc64le and match(python, ">3.12"))
+  script: ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+
+requirements:
+  host:
+    - python
+    - hatchling
+    - hatch-vcs
+    - pip
+  run:
+    - python
+    - awkward >=2.6.3
+    - cupy >=13.1.0
+    - numpy >=1.22.0
+    - scipy >=1.1.0
+    - hist >=2
+    - boost-histogram
+
+tests:
+  - python:
+      imports:
+        - cuda_histogram
+        - cuda_histogram.axis
+      pip_check: true
+
+about:
+  summary: Histogramming tools on CUDA
+  license: BSD-3-Clause
+  license_file: LICENSE
+  homepage: https://github.com/scikit-hep/cuda-histogram
+  documentation: https://cuda-histogram.readthedocs.io/
+
+extra:
+  recipe-maintainers:
+    - conda-forge/scikit-hep
+    - Saransh-cpp

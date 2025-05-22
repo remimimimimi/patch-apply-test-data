@@ -1,0 +1,74 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/prefix-dev/recipe-format/main/schema.json
+schema_version: 1
+
+context:
+  version: "3.11.2"
+
+package:
+  name: vale
+  version: ${{ version }}
+
+source:
+  url: https://github.com/errata-ai/vale/archive/refs/tags/v${{ version }}.tar.gz
+  sha256: 12795c72a5628ebc22d46a33b878519c5ba18e6d665271893bfa24cb1f864f73
+  target_directory: src/github.com/errata-ai/vale
+  patches:
+    - 0000-use-conda-prefix.patch
+
+build:
+  number: 0
+  script:
+    file: build-vale
+
+requirements:
+  build:
+    - ${{ compiler("go-cgo") }}
+    - go-cgo >=1.21
+    - go-licenses
+    - if: unix
+      then:
+        - ${{ compiler("c") }}
+        - ${{ compiler("cxx") }}
+        - ${{ stdlib("c") }}
+      else:
+        - ${{ compiler("m2w64_c") }}
+        - ${{ compiler("m2w64_cxx") }}
+        - ${{ stdlib("m2w64_c") }}
+        - m2-base
+
+tests:
+  - requirements:
+      run:
+        - if: win
+          then: m2-grep
+    script:
+      - vale --version
+      - vale --help
+      - vale --version | grep -iE "${{ version | replace(".", "\\.") }}"
+      - vale ls-dirs
+      - if: unix
+        then:
+          - mkdir -p "${CONDA_PREFIX}/share/vale/styles"
+          - vale ls-dirs | grep "${CONDA_PREFIX}/share"
+          - mkdir -p "${CONDA_PREFIX}/etc/vale"
+          - touch "${CONDA_PREFIX}/etc/vale/.vale.ini"
+          - vale ls-dirs | grep "${CONDA_PREFIX}/etc"
+        else:
+          - md "%CONDA_PREFIX%\share\vale\styles"
+          - md "%CONDA_PREFIX%\etc\vale"
+          - echo "TODO" >> "%CONDA_PREFIX%\etc\vale\.vale.ini"
+      - vale ls-dirs
+
+about:
+  license: MIT
+  license_file:
+    - src/github.com/errata-ai/vale/LICENSE
+    - license-files/
+  summary: A syntax-aware linter for prose built with speed and extensibility in mind.
+  homepage: https://vale.sh
+  repository: https://github.com/errata-ai/vale
+  documentation: https://vale.sh/docs
+
+extra:
+  recipe-maintainers:
+    - bollwyvl
