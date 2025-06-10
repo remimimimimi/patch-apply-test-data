@@ -5,7 +5,7 @@ context:
 # Note: This recipe is specifically designed to work well with the autotick bot.
 # Also refer to https://github.com/conda-forge/rust-feedstock/blob/main/recipe/meta.yaml.
 package:
-  name: ${{ polars_variant }}
+  name: "polars_u64_idx"
   version: ${{ version }}
 
 source:

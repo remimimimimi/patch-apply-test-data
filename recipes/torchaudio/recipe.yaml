@@ -73,10 +73,10 @@ requirements:
     - ccache
     - git
 
-    - if: cuda_compiler_version != "None"
-      then:
-        - ${{ compiler('cuda') }}
-        - cuda-version ==${{ cuda_compiler_version }}
+    # - if: cuda_compiler_version != "None"
+    #   then:
+    #     - ${{ compiler('cuda') }}
+    #     - cuda-version ==${{ cuda_compiler_version }}
 
   host:
     - python
@@ -93,9 +93,9 @@ requirements:
     - liblzma-devel
     - zlib
 
-    - if: cuda_compiler_version != "None"
-      then:
-        - cuda-version ==${{ cuda_compiler_version }}
+    # - if: cuda_compiler_version != "None"
+    #   then:
+    #     - cuda-version ==${{ cuda_compiler_version }}
 
     - if: match(cuda_compiler_version, ">=12")
       then:
@@ -174,9 +174,9 @@ tests:
         # - sox
         - pytorch-lightning
         - sentencepiece
-        - if: cuda_compiler_version != "None"
-          then:
-            - cuda-version ==${{ cuda_compiler_version }}
+        # - if: cuda_compiler_version != "None"
+        #   then:
+        #     - cuda-version ==${{ cuda_compiler_version }}
     files:
       source:
         - test/
