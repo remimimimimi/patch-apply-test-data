@@ -31,7 +31,7 @@ index 4ca8f1bf..0a9d0fb4 100644
    if (spid >= 0 && (spid != blid) && beamid < beam) {
 @@ -194,7 +194,7 @@ __global__ void prob_space_blank_kernel_v2(
      int idout = spid + (batch_id * beam + beamid) * ldc;
-     ptablen[idout] = _language() *
+     ptablen[idout] = _lauguage() *
          _logprob(pc, _logsumexp(tmpprev.x, tmpprev.y)); // logsumexp
 -    ptable[idout] = -FLT_MAX;
 +    ptable[idout] = -std::numeric_limits<float>::max();

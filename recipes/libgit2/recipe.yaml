@@ -2,7 +2,7 @@ schema_version: 1
 
 context:
   name: libgit2
-  version: 1.9.0
+  version: "1.9.1"
 
 package:
   name: ${{ name|lower }}
@@ -10,14 +10,14 @@ package:
 
 source:
   url: https://github.com/${{ name }}/${{ name }}/archive/v${{ version }}.tar.gz
-  sha256: 75b27d4d6df44bd34e2f70663cfd998f5ec41e680e1e593238bbe517a84c7ed2
+  sha256: 14cab3014b2b7ad75970ff4548e83615f74d719afe00aa479b4a889c1e13fc00
   patches:
     # TODO: Propose this patch to upstream.
     # Downside: This breaks pkg-config for static builds (not relevant for conda-forge).
     - 0001-Use-Requires.internal-instead-of-Requires.private.patch
 
 build:
-  number: 1
+  number: 0
 
 requirements:
   build:
@@ -31,8 +31,7 @@ requirements:
   host:
     - if: win
       then: msinttypes
-    - if: not win
-      then: openssl
+      else: openssl
     - if: osx
       then: libiconv
     - if: unix
@@ -50,14 +49,13 @@ tests:
     script:
       - if: not win
         then: test -f $PREFIX/include/git2.h
-      - if: win
-        then: if not exist %LIBRARY_INC%\\git2.h exit 1
+        else: if not exist %LIBRARY_INC%\\git2.h exit 1
       - if: unix
         then: test -f $PREFIX/lib/libgit2${SHLIB_EXT}
       - if: win
-        then: if not exist %LIBRARY_LIB%\\git2.lib exit 1
-      - if: win
-        then: if not exist %LIBRARY_BIN%\\git2.dll exit 1
+        then:
+          - if not exist %LIBRARY_LIB%\\git2.lib exit 1
+          - if not exist %LIBRARY_BIN%\\git2.dll exit 1
       - pkg-config --cflags --libs libgit2
 
 about:

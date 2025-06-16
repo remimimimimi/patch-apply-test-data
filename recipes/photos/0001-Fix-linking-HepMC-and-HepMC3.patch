@@ -1,0 +1,25 @@
+From edf8a5fd548f39fff0eb9774439498a9e00ef666 Mon Sep 17 00:00:00 2001
+From: Chris Burr <christopher.burr@cern.ch>
+Date: Sat, 8 Feb 2025 13:24:40 +0100
+Subject: [PATCH] Fix linking HepMC and HepMC3
+
+---
+ src/Makefile.in | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/Makefile.in b/src/Makefile.in
+index 98ad22c..4797fc2 100644
+--- a/src/Makefile.in
++++ b/src/Makefile.in
+@@ -420,7 +420,7 @@ eventRecordInterfaces/PhotosHEPEVTParticle.cxx
+ @HAS_HEPMC3_TRUE@  eventRecordInterfaces/PhotosHepMC3Event.cxx    \
+ @HAS_HEPMC3_TRUE@  eventRecordInterfaces/PhotosHepMC3Particle.cxx
+ 
+-@HAS_HEPMC3_TRUE@libPhotosppHepMC3_la_LIBADD = libPhotospp.la
++@HAS_HEPMC3_TRUE@libPhotosppHepMC3_la_LIBADD = libPhotospp.la -lHepMC -lHepMC3
+ AM_CPPFLAGS = -I$(top_srcdir)/src/photos-C \
+               -I$(top_srcdir)/src/photosCInterfaces \
+               -I$(top_srcdir)/src/utilities \
+-- 
+2.47.0
+

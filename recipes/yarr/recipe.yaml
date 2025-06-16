@@ -2,7 +2,7 @@ schema_version: 1
 
 context:
   name: yarr
-  version: "1.5.4"
+  version: "1.5.5"
 
 package:
   name: ${{ name|lower }}
@@ -10,7 +10,7 @@ package:
 
 source:
   url: https://gitlab.cern.ch/yarr/${{ name }}/-/archive/v${{ version }}/${{ name }}-v${{ version }}.tar.gz
-  sha256: 18b14afd1eaa82198b896023b87aa140bd67938ae38646361d0bdada9eca8ed8
+  sha256: 89f7dd954cececd56be5ab4d5aca3237d9724f52b1f169a741cedb08b36d309b
   patches:
     - patches/0002-patch-strip-debug.patch
     - patches/0003-patch-dependency-resolution-for-osx.patch

@@ -1,0 +1,16 @@
+diff --git a/pyproject.toml b/pyproject.toml
+index b368b48..dd842cc 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -10,10 +10,7 @@ name = "pytest-asyncio"
+ description = "Pytest support for asyncio"
+ readme.content-type = "text/x-rst"
+ readme.file = "README.rst"
+-license = "Apache-2.0"
+-license-files = [
+-  "LICENSE",
+-]
++license = {text = "Apache-2.0"}
+ authors = [
+   { name = "Tin Tvrtković <tinchester@gmail.com>", email = "tinchester@gmail.com" },
+ ]

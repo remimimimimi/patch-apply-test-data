@@ -1,0 +1,13 @@
+diff --git a/setup.py b/setup.py
+index 951fc84..4c16086 100644
+--- a/setup.py
++++ b/setup.py
+@@ -29,7 +29,7 @@ setup(name='guacamol',
+           'scipy>=1.1.0',
+           'tqdm>=4.26.0',
+           'FCD>=1.1',
+-          'rdkit-pypi>=2021.9.2.1',
++          'rdkit>=2021.9.2.1',
+       ],
+       python_requires='>=3.6',
+       extras_require={

@@ -1,0 +1,35 @@
+From 28e1338e7d6ed6c02c2ebf13939e1833c10b5371 Mon Sep 17 00:00:00 2001
+From: Silvio Traversaro <silvio@traversaro.it>
+Date: Wed, 28 May 2025 19:43:07 +0200
+Subject: [PATCH] Fix version in CMake and python metadata
+
+---
+ CMakeLists.txt         | 2 +-
+ baf_kpi/pyproject.toml | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index a2b548d..64e7357 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -7,7 +7,7 @@ cmake_minimum_required(VERSION 3.16)
+ 
+ ## MAIN project
+ project(BiomechanicalAnalysisFramework
+-  VERSION 0.2.0)
++  VERSION 0.2.1)
+ 
+ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+ 
+diff --git a/baf_kpi/pyproject.toml b/baf_kpi/pyproject.toml
+index 03aea37..c7b6d6a 100644
+--- a/baf_kpi/pyproject.toml
++++ b/baf_kpi/pyproject.toml
+@@ -1,6 +1,6 @@
+ [project]
+ name = "baf-kpi"
+-version = "0.2.0"   # The version of this python package should be aligned with the version number in  "https://github.com/ami-iit/biomechanical-analysis-framework/blob/main/CMakeLists.txt#L10"
++version = "0.2.1"   # The version of this python package should be aligned with the version number in  "https://github.com/ami-iit/biomechanical-analysis-framework/blob/main/CMakeLists.txt#L10"
+ description = "Python project to compute KPI parameters"
+ license.file = "LICENSE"
+ dependencies = ["numpy", "matplotlib", "pandas", "scipy", "h5py", "idyntree", "rich", "joblib", "meshcat", "resolve-robotics-uri-py"]

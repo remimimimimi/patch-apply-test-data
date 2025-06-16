@@ -1,0 +1,28 @@
+From c9730702037f278b9bf0adcd0c34ba032a00debc Mon Sep 17 00:00:00 2001
+From: Mark Harfouche <mark.harfouche@gmail.com>
+Date: Mon, 17 Feb 2025 16:08:48 -0500
+Subject: [PATCH 9/9] Loosen dependencies
+
+---
+ setup.py | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/setup.py b/setup.py
+index 64706583..2b487574 100644
+--- a/setup.py
++++ b/setup.py
+@@ -31,9 +31,9 @@ setuptools.setup(
+         "imgaug>=0.4.0",
+         "imageio-ffmpeg",
+         "numba>=0.54",
+-        "matplotlib>=3.3,<3.9,!=3.7.0,!=3.7.1",
++        "matplotlib>=3.3,!=3.7.0,!=3.7.1",
+         "networkx>=2.6",
+-        "numpy>=1.18.5,<2.0.0",
++        "numpy>=1.18.5",
+         "pandas>=1.0.1,!=1.5.0",
+         "scikit-image>=0.17",
+         "scikit-learn>=1.0",
+-- 
+2.43.0
+

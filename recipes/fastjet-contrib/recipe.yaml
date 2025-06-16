@@ -1,0 +1,148 @@
+context:
+  name: "fastjet-contrib"
+  version: "1.101"
+
+recipe:
+  # Have top level name be unique from any outputs
+  # c.f. https://github.com/conda-forge/conda-forge.github.io/blob/abfc33db28c35e9a8f6b719d0021768f0d5d06be/docs/maintainer/knowledge_base.md?plain=1#L1749
+  name: ${{ name }}-split
+  version: ${{ version }}
+
+source:
+  url: https://fastjet.hepforge.org/contrib/downloads/fjcontrib-${{ version }}.tar.gz
+  sha256: dbe8ad2199f72d64dd29f6218f6f53efddc8fb3e5dd9c5d10f2fd1e23d6e44f6
+  patches:
+    # FIXME: Avoid install_name_tool 'larger updated load commands do not fit' error
+    - if: osx and arm64
+      then: use-headerpad_max_install_names-linker-option.patch
+
+build:
+  number: 1
+  skip: win
+
+outputs:
+  - package:
+      name: ${{ name }}
+
+    build:
+      script:
+        # Get an updated config.sub and config.guess
+        - cp $BUILD_PREFIX/share/gnuconfig/config.* .
+        - ./configure --help
+        - ./configure --list
+        - ./configure --fastjet-config=$(command -v fastjet-config) --prefix=$PREFIX CXX=$CXX
+        - make --jobs="${CPU_COUNT}"
+        - make fragile-shared --jobs="${CPU_COUNT}"
+        - if: build_platform == target_platform
+          then: make check --jobs="${CPU_COUNT}"
+        - make install
+        - make fragile-shared-install
+        # Remove the static libraries that got installed
+        - rm $PREFIX/lib/libCMPPlugin.a
+        - rm $PREFIX/lib/libCentauro.a
+        - rm $PREFIX/lib/libClusteringVetoPlugin.a
+        - rm $PREFIX/lib/libConstituentSubtractor.a
+        - rm $PREFIX/lib/libEnergyCorrelator.a
+        - rm $PREFIX/lib/libFlavorCone.a
+        - rm $PREFIX/lib/libGHSAlgo.a
+        - rm $PREFIX/lib/libGenericSubtractor.a
+        - rm $PREFIX/lib/libIFNPlugin.a
+        - rm $PREFIX/lib/libJetCleanser.a
+        - rm $PREFIX/lib/libJetFFMoments.a
+        - rm $PREFIX/lib/libJetsWithoutJets.a
+        - rm $PREFIX/lib/libLundPlane.a
+        - rm $PREFIX/lib/libNsubjettiness.a
+        - rm $PREFIX/lib/libQCDAwarePlugin.a
+        - rm $PREFIX/lib/libRecursiveTools.a
+        - rm $PREFIX/lib/libSDFPlugin.a
+        - rm $PREFIX/lib/libScJet.a
+        - rm $PREFIX/lib/libSignalFreeBackgroundEstimator.a
+        - rm $PREFIX/lib/libSoftKiller.a
+        - rm $PREFIX/lib/libSubjetCounting.a
+        - rm $PREFIX/lib/libValenciaPlugin.a
+        - rm $PREFIX/lib/libVariableR.a
+
+    requirements:
+      run_exports:
+        - ${{ pin_subpackage('fastjet-contrib', upper_bound='x.x') }}
+      build:
+        - ${{ stdlib('c') }}
+        - ${{ compiler('cxx') }}
+        - automake
+        - libtool
+        - make
+        - pkg-config
+        - gnuconfig
+      host:
+        - fastjet-cxx
+      run:
+        - fastjet-cxx
+
+    tests:
+      - script: run_test_shared.sh
+        requirements:
+          run:
+            - ${{ compiler('cxx') }}
+            - curl
+            - tar
+            - grep
+            - sed
+
+
+  - package:
+      name: ${{ name }}-static
+
+    build:
+      script:
+        # Get an updated config.sub and config.guess
+        - cp $BUILD_PREFIX/share/gnuconfig/config.* .
+        - ./configure --help
+        - ./configure --list
+        - ./configure --fastjet-config=$(command -v fastjet-config) --prefix=$PREFIX CXX=$CXX
+        - make --jobs="${CPU_COUNT}"
+        - if: build_platform == target_platform
+          then: make check --jobs="${CPU_COUNT}"
+        - make install
+
+    requirements:
+      build:
+        - ${{ stdlib('c') }}
+        - ${{ compiler('cxx') }}
+        - automake
+        - libtool
+        - make
+        - pkg-config
+        - gnuconfig
+      host:
+        - fastjet-cxx
+      run:
+        - fastjet-cxx
+
+    tests:
+      - script: run_test_static.sh
+        requirements:
+          run:
+            - ${{ compiler('cxx') }}
+            - curl
+            - tar
+            - grep
+            - sed
+
+about:
+  homepage: https://fastjet.hepforge.org/contrib/
+  summary: 'FastJet Contrib: 3rd party extensions of FastJet'
+  description: |
+    The fastjet-contrib space is intended to provide a common location for
+    access to 3rd party extensions of FastJet.
+  license: GPL-2.0-or-later
+  license_family: GPL
+  license_file: COPYING
+  repository: https://github.com/fjcontrib/fjcontrib
+  documentation: https://fastjet.hepforge.org/contrib/
+
+extra:
+  feedstock-name: fastjet-contrib
+  recipe-maintainers:
+    - kratsg
+    - matthewfeickert
+    - lgray

@@ -1,0 +1,93 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/prefix-dev/recipe-format/main/schema.json
+schema_version: 1
+
+context:
+  version: "4.33.0"
+  selenium_manager_version: ${{ (version | split('.'))[:2] | join('.') }}.*
+
+package:
+  name: selenium
+  version: ${{ version }}
+
+source:
+  - url: https://pypi.org/packages/source/s/selenium/selenium-${{ version }}.tar.gz
+    sha256: d90974db95d2cdeb34d2fb1b13f03dc904f53e6c5d228745b0635ada10cd625d
+    patches:
+      - 0000-no-rust.patch
+  - url:
+      - https://raw.githubusercontent.com/SeleniumHQ/selenium/selenium-${{ version }}-python/LICENSE
+      - https://raw.githubusercontent.com/SeleniumHQ/selenium/selenium-${{ version }}/LICENSE
+    sha256: 1ee8454a0696ac46b0d5b67f85b2a0e3af2b7726e1b82cd182af60fd285bcba3
+    file_name: LICENSE-selenium-${{ version }}
+  - url:
+      - https://raw.githubusercontent.com/SeleniumHQ/selenium/selenium-${{ version }}-python/NOTICE
+      - https://raw.githubusercontent.com/SeleniumHQ/selenium/selenium-${{ version }}/NOTICE
+    sha256: 2ad84373d31eb5422a434a5c78eca674cd55263d0f4782603523c18a5e581cf6
+    file_name: NOTICE-selenium-${{ version }}
+
+build:
+  number: 0
+  noarch: python
+  script:
+    # ensure all static assets are included
+    - echo "recursive-include * *.js" >> MANIFEST.in
+    - echo "recursive-include * *.json" >> MANIFEST.in
+    # ensure all directories have `__init__.py`
+    - ${{ PYTHON }} -c "from pathlib import Path; [(p / '__init__.py').touch() for p in Path('selenium').rglob('*') if p.is_dir()]"
+    - ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation --disable-pip-version-check
+
+requirements:
+  host:
+    - pip
+    - python ${{ python_min }}.*
+    - setuptools
+  run:
+    - certifi >=2025.4.26
+    - python >=${{ python_min }}
+    - selenium-manager ${{ selenium_manager_version }}
+    - trio >=0.30.0,<1.0
+    - trio-websocket >=0.12.2,<0.13.0
+    - typing_extensions >=4.13.2,<4.14.0
+    - urllib3 >=2.4.0,<2.5.0
+    - websocket-client >=1.8.0,<1.9.0
+
+tests:
+  - python:
+      pip_check: true
+      python_version:
+        - ${{ python_min }}.*
+        - 3.13.*
+      imports:
+        - selenium
+        - selenium.common
+        - selenium.webdriver.common
+        - selenium.webdriver.chrome
+        - selenium.webdriver.chromium
+        - selenium.webdriver.edge
+        - selenium.webdriver.firefox
+        - selenium.webdriver.remote
+        - selenium.webdriver.support
+  - files:
+      recipe: run_test.py
+    requirements:
+      run:
+        - python ${{ python_min }}.*
+    script:
+      file: run_test.py
+      interpreter: python
+
+about:
+  license_file:
+    - LICENSE-selenium-${{ version }}
+    - NOTICE-selenium-${{ version }}
+  license: Apache-2.0
+  summary: Official Python bindings for Selenium WebDriver
+  homepage: https://www.selenium.dev
+  repository: https://github.com/SeleniumHQ/selenium
+  documentation: https://www.selenium.dev/documentation
+
+extra:
+  recipe-maintainers:
+    - pmlandwehr
+    - ocefpaf
+    - bollwyvl

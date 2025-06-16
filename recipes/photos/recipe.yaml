@@ -1,0 +1,58 @@
+schema_version: 1
+
+context:
+  name: photos
+  version: 3.64
+
+package:
+  name: ${{ name|lower }}
+  version: ${{ version }}
+
+source:
+  url: http://photospp.web.cern.ch/photospp/resources/PHOTOS.${{ version }}/PHOTOS.${{ version }}-LHC.tar.gz
+  sha256: cb4096b4804289fc4d54a992caa566cbbd33f41f65f8906deb01200dc5163027
+  patches:
+    - 0001-Fix-linking-HepMC-and-HepMC3.patch
+
+build:
+  number: 1
+  skip: win
+
+requirements:
+  build:
+    - ${{ stdlib("c") }}
+    - ${{ compiler('c') }}
+    - ${{ compiler('cxx') }}
+    - make
+    - autoconf
+    - automake
+    - libtool
+    - if: unix
+      then: gnuconfig
+    - pkg-config
+  host:
+    - hepmc2
+    - hepmc3
+  run:
+    - ${{ pin_compatible('hepmc2', upper_bound="x.x.x") }}
+    - ${{ pin_compatible('hepmc3', upper_bound="x.x.x") }}
+  run_exports:
+    - ${{ pin_subpackage('photos', upper_bound='x.x.x') }}
+
+tests:
+  - script:
+      - "test -f \"$PREFIX/lib/libPhotosppHEPEVT$SHLIB_EXT\""
+      - "test -f \"$PREFIX/lib/libPhotosppHepMC3$SHLIB_EXT\""
+      - "test -f \"$PREFIX/lib/libPhotosppHepMC$SHLIB_EXT\""
+      - "test -f \"$PREFIX/lib/libPhotospp$SHLIB_EXT\""
+
+about:
+  license: GPL-3.0-only
+  license_file: COPYING
+  summary: PHOTOS Monte Carlo for precision simulation of QED in decays
+  homepage: https://photospp.web.cern.ch/photospp/
+  documentation: https://photospp.web.cern.ch/photospp/resources/PHOTOS.${{ version }}/Photos_interface_design.${{ version }}.pdf
+
+extra:
+  recipe-maintainers:
+    - chrisburr

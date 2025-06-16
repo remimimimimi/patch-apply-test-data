@@ -1,6 +1,6 @@
 context:
   name: tree-sitter-language-pack
-  version: "0.7.2"
+  version: "0.7.3"
   python_min: '3.9'
 
 package:
@@ -9,7 +9,7 @@ package:
 
 source:
   url: https://github.com/Goldziher/tree-sitter-language-pack/archive/refs/tags/v${{ version }}.tar.gz
-  sha256: acdbf4ebbc2d709db073fae717813e77746b81e41b27eae1976b6ff212c008dd
+  sha256: b0c151f46184d2d5d5ffec0512d4611875b3ede71234e6ad1e7a7d514e3e0e57
   # No tests
   # url: https://pypi.org/packages/source/t/tree-sitter-language-pack/tree_sitter_language_pack-${{ version }}.tar.gz
   # sha256: 8fe73107045ce150aba2590bc5df114283162413da39dc264710a6ebccaf048c
@@ -19,8 +19,8 @@ source:
 build:
   script:
     - mkdir parsers
-    - ${{ PYTHON }} -m pip install . --no-deps --ignore-installed -vv
-  number: 1
+    - ${{ PYTHON }} -m pip install . --no-deps --ignore-installed -vvv
+  number: 0
 
 requirements:
   build:
@@ -61,7 +61,7 @@ tests:
         - tests/
 
 about:
-  homepage: https://github.com/tree-sitter/tree-sitter-language-pack
+  homepage: https://github.com/Goldziher/tree-sitter-language-pack
   summary: 'A tree-sitter parser for templating languages like ERB and EJS.'
   description: |
     A tree-sitter parser for templating languages like ERB and EJS,
@@ -69,7 +69,7 @@ about:
     the delimiters <% and %>
   license: MIT
   license_file: LICENSE
-  repository: https://github.com/tree-sitter/tree-sitter-language-pack
+  repository: https://github.com/Goldziher/tree-sitter-language-pack
 
 extra:
   recipe-maintainers:

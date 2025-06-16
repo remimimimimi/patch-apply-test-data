@@ -1,0 +1,125 @@
+commit a955b11589e48c26bea4c2a133d194cb5780f005
+Author: Henry Schreiner <HenrySchreinerIII@gmail.com>
+Date:   Thu Jan 30 16:56:17 2025 -0500
+
+    fix(types): Update for newer setuptools (#1120)
+    
+    * fix(types): Update for newer setuptools
+    
+    Signed-off-by: Henry Schreiner <henryschreineriii@gmail.com>
+    
+    * Update tests/__init__.py
+    
+    * Update build_py.py
+    
+    * ci: drop most Python 3.7 testing
+    
+    Signed-off-by: Henry Schreiner <henryschreineriii@gmail.com>
+    
+    ---------
+    
+    Signed-off-by: Henry Schreiner <henryschreineriii@gmail.com>
+
+diff --git a/.github/workflows/ci.yml b/.github/workflows/ci.yml
+index c806c7a..86fe4e9 100644
+--- a/.github/workflows/ci.yml
++++ b/.github/workflows/ci.yml
+@@ -38,7 +38,7 @@ jobs:
+       with:
+         fetch-depth: 0
+ 
+-    - uses: yezz123/setup-uv@v4
++    - uses: astral-sh/setup-uv@v4
+ 
+     - name: Set environment for available GHA MSVCs
+       if: matrix.runs-on == 'windows-2019'
+@@ -65,18 +65,13 @@ jobs:
+     - name: Setup nox
+       uses: wntrblm/nox@2024.04.15
+       with:
+-        python-versions: "3.7,3.8,3.9,3.10,3.11,3.12,3.13"
++        python-versions: "3.8,3.9,3.10,3.11,3.12,3.13"
+ 
+     # We check all Python's on Linux, because it's fast.
+     # We check minimum Python and maximum Python on all OS's.
+ 
+-    - name: Test on 🐍 3.7
+-      run: >
+-        nox --default-venv-backend=${{ startsWith(matrix.runs-on, 'windows') && 'virtualenv' || 'uv'}}
+-        -s tests-3.7 -- --cov --cov-report=xml --cov-report=term --durations=20
+     - name: Test on 🐍 3.8
+-      if: runner.os == 'Linux'
+-      run: nox -s tests-3.8 -- --cov --cov-report=xml --cov-report=term --cov-append --durations=20
++      run: nox -s tests-3.8 -- --cov --cov-report=xml --cov-report=term --durations=20
+     - name: Test on 🐍 3.9
+       if: runner.os == 'Linux'
+       run: nox -s tests-3.9 -- --cov --cov-report=xml --cov-report=term --cov-append --durations=20
+@@ -133,10 +128,10 @@ jobs:
+       fail-fast: false
+       matrix:
+         runs-on: [ubuntu-latest, macos-13, windows-latest]
+-        pypy-version: ["3.9"]
++        pypy-version: ["3.10"]
+         include:
+         - runs-on: ubuntu-latest
+-          pypy-version: "3.7"
++          pypy-version: "3.8"
+ 
+     steps:
+     - uses: actions/checkout@v4
+diff --git a/skbuild/command/build_py.py b/skbuild/command/build_py.py
+index bfb5818..638c5bf 100644
+--- a/skbuild/command/build_py.py
++++ b/skbuild/command/build_py.py
+@@ -73,7 +73,7 @@ class build_py(set_build_base_mixin, _build_py):
+             try:
+                 (package_dir, checked) = packages[package]
+             except KeyError:
+-                package_dir = self.get_package_dir(package)  # type: ignore[no-untyped-call]
++                package_dir = self.get_package_dir(package)
+                 checked = False
+ 
+             if not checked:
+diff --git a/skbuild/platform_specifics/windows.py b/skbuild/platform_specifics/windows.py
+index 01085a3..144dec8 100644
+--- a/skbuild/platform_specifics/windows.py
++++ b/skbuild/platform_specifics/windows.py
+@@ -215,7 +215,7 @@ def _get_msvc_compiler_env(vs_version: int, vs_toolset: str | None = None) -> Ca
+         return __get_msvc_compiler_env_cache[cache_key]
+ 
+     if hasattr(monkey, "patch_for_msvc_specialized_compiler"):
+-        monkey.patch_for_msvc_specialized_compiler()  # type: ignore[no-untyped-call]
++        monkey.patch_for_msvc_specialized_compiler()
+ 
+     vc_dir = find_visual_studio(vs_version)
+     vcvarsall = os.path.join(vc_dir, "vcvarsall.bat")
+diff --git a/skbuild/setuptools_wrap.py b/skbuild/setuptools_wrap.py
+index 8e59631..f6c60cd 100644
+--- a/skbuild/setuptools_wrap.py
++++ b/skbuild/setuptools_wrap.py
+@@ -250,7 +250,7 @@ def _parse_setuptools_arguments(
+ 
+     return (
+         display_only,
+-        dist.help_commands,  # type: ignore[attr-defined]
++        bool(dist.help_commands),
+         dist.commands,
+         dist.hide_listing,  # type: ignore[attr-defined]
+         dist.force_cmake,  # type: ignore[attr-defined]
+diff --git a/tests/__init__.py b/tests/__init__.py
+index 4f3c954..381a67b 100644
+--- a/tests/__init__.py
++++ b/tests/__init__.py
+@@ -215,7 +215,11 @@ def execute_setup_py(project_dir, setup_args, disable_languages_test=False):
+     """
+ 
+     # See https://stackoverflow.com/questions/9160227/dir-util-copy-tree-fails-after-shutil-rmtree
+-    distutils.dir_util._path_created.clear()  # type: ignore[attr-defined]
++    to_clear = getattr(
++        distutils.dir_util, "SkipRepeatAbsolutePaths", getattr(distutils.dir_util, "_path_created", None)
++    )
++    assert to_clear is not None, "Must have one of the two supported clearing mechanisms"
++    to_clear.clear()
+ 
+     # Clear _PYTHON_HOST_PLATFORM to ensure value sets in skbuild.setuptools_wrap.setup() does not
+     # influence other tests.

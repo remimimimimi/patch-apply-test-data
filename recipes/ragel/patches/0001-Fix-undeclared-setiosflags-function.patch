@@ -1,0 +1,24 @@
+From 9e3e3865605284b510b16aad881e6ee205ba53ea Mon Sep 17 00:00:00 2001
+From: Rolando Espinoza <rndmax84@gmail.com>
+Date: Sun, 12 Feb 2017 00:18:44 -0400
+Subject: [PATCH] Fix undeclared setiosflags function.
+
+---
+ ragel/javacodegen.cpp | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/ragel/javacodegen.cpp b/ragel/javacodegen.cpp
+index adff67e..cef695c 100644
+--- a/ragel/javacodegen.cpp
++++ b/ragel/javacodegen.cpp
+@@ -49,6 +49,7 @@ using std::cerr;
+ using std::istream;
+ using std::ifstream;
+ using std::ostream;
++using std::setiosflags;
+ using std::ios;
+ using std::cin;
+ using std::cout;
+-- 
+2.6.2
+

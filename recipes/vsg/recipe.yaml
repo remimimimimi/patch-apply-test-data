@@ -1,0 +1,83 @@
+context:
+  name: vsg
+  version: "3.31.0"
+
+package:
+  name: ${{ name|lower }}
+  version: ${{ version }}
+
+source:
+  url: https://github.com/jeremiah-c-leary/vhdl-style-guide/archive/refs/tags/${{ version }}.tar.gz
+  sha256: d589054f8fa3f4ff147efda4bdc8e91cc1123a6c7a5cf136b54c0a0d5d530116
+  patches:
+    - patches/0001-version-patch.patch
+
+build:
+  number: 0
+  noarch: python
+  script:
+    # Create a VERSION file with the correct version
+    # because setuptools-git-versioning will not detect
+    # the version from the GitHub archive (not a repository,
+    # there is no tag).
+    - echo ${{ version }} > VERSION
+    - python -m pip install . -vv --no-deps --no-build-isolation
+  python:
+    entry_points:
+      - vsg = vsg.__main__:main
+
+requirements:
+  host:
+    - python ${{ python_min }}.*
+    - setuptools
+    - setuptools-git-versioning
+    - wheel
+    - pip
+  run:
+    - python >=${{ python_min }}
+    - pyyaml >=5.1
+
+tests:
+  - python:
+      imports:
+        - vsg
+  - script:
+      - vsg --help
+      - python -c "from importlib.metadata import version; assert(version('${{ name }}')=='${{ version }}')"
+      - pytest --no-cov
+    files:
+      source:
+        - bin/
+        - docs/
+        - vsg/styles/*.yaml
+        - vsg/rules/ranges/preamble_doc.rst
+        - vsg/rules/block_comment/preamble_doc.rst
+        - vsg/rules/length/preamble_doc.rst
+        - vsg/rules/procedure/preamble_doc.rst
+        - vsg/rules/procedure_call/preamble_doc.rst
+        - vsg/rules/when/preamble_doc.rst
+        - vsg/vhdlFile/indent/indent_config.yaml
+        - tests/
+        - pyproject.toml
+    requirements:
+      run:
+        - python ${{ python_min }}.*
+        - pip
+        - pytest
+        - pytest-cov
+        - pytest-html
+        - pytest-xdist
+
+about:
+  summary: Coding style enforcement for VHDL
+  license: GPL-3.0-only
+  license_file: LICENSE
+  description: |
+    Coding style enforcement for VHDL
+  homepage: https://github.com/jeremiah-c-leary/vhdl-style-guide
+  repository: https://github.com/jeremiah-c-leary/vhdl-style-guide
+  documentation: https://vhdl-style-guide.readthedocs.io/en/stable/
+
+extra:
+  recipe-maintainers:
+    - blmaier

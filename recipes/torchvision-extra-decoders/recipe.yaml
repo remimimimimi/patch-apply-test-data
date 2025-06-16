@@ -15,7 +15,7 @@ source:
   sha256: c67624b96688ba3f0550a71093f40a9f1fc9dfd8d182ffd8de703d805042758d
   patches:
     - 0001-Always-return-library-found-for-conda-forge.patch
-    - 0002-Allow-to-specify-git-sha-through-environment-variable.patch
+    - 0002-Allow-to-specify-git-sha-through-environment-variabl.patch
 
 build:
   skip:
@@ -30,7 +30,7 @@ build:
     env:
       BUILD_GIT_SHA: ${{ gitsha }}
       BUILD_VERSION: ${{ version }}
-  number: 0
+  number: 3
 
 requirements:
   build:

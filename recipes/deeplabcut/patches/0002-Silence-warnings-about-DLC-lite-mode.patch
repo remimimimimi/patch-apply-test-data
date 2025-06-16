@@ -1,0 +1,35 @@
+From beafb134bb7edbfd04529bfc497e466c2d0ecbdf Mon Sep 17 00:00:00 2001
+From: Mark Harfouche <mark.harfouche@gmail.com>
+Date: Mon, 25 Sep 2023 02:18:08 -0400
+Subject: [PATCH 2/9] Silence warnings about DLC lite mode
+
+---
+ deeplabcut/__init__.py | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/deeplabcut/__init__.py b/deeplabcut/__init__.py
+index 2da4b6a9..44f4fa8b 100644
+--- a/deeplabcut/__init__.py
++++ b/deeplabcut/__init__.py
+@@ -19,7 +19,6 @@ tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
+ DEBUG = True and "DEBUG" in os.environ and os.environ["DEBUG"]
+ from deeplabcut.version import __version__, VERSION
+ 
+-print(f"Loading DLC {VERSION}...")
+ 
+ try:
+     from deeplabcut.gui.tracklet_toolbox import refine_tracklets
+@@ -30,9 +29,7 @@ try:
+     )
+     from deeplabcut.gui.widgets import SkeletonBuilder
+ except (ModuleNotFoundError, ImportError):
+-    print(
+-        "DLC loaded in light mode; you cannot use any GUI (labeling, relabeling and standalone GUI)"
+-    )
++    pass
+ 
+ from deeplabcut.create_project import (
+     create_new_project,
+-- 
+2.43.0
+

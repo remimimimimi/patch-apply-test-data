@@ -14,7 +14,7 @@ source:
     - 0001-Don-t-force-static-linkage.patch
 
 build:
-  number: 0
+  number: 7
 
 requirements:
   build:

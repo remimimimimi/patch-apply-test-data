@@ -1,0 +1,43 @@
+From b7e221a894a8a6ae6296c97a8efe503a78c49909 Mon Sep 17 00:00:00 2001
+From: Bas Zalmstra <bas@prefix.dev>
+Date: Fri, 16 May 2025 20:53:36 +0200
+Subject: [PATCH 3/3] fix: use gcc visibility attributes
+
+---
+ src/libmodplug/stdafx.h | 5 ++---
+ src/modplug.h           | 5 ++---
+ 2 files changed, 4 insertions(+), 6 deletions(-)
+
+diff --git a/src/libmodplug/stdafx.h b/src/libmodplug/stdafx.h
+index 3eacf1d..637c2ae 100644
+--- a/src/libmodplug/stdafx.h
++++ b/src/libmodplug/stdafx.h
+@@ -133,9 +133,8 @@ inline void ProcessPlugins(int n) {}
+ # else
+ #   define MODPLUG_EXPORT __declspec(dllimport)			/* using libmodplug dll for windows */
+ # endif
+-/* FIXME: USE VISIBILITY ATTRIBUTES HERE */
+-#elif defined(MODPLUG_BUILD)
+-#define MODPLUG_EXPORT
++#elif defined(MODPLUG_BUILD) && defined(SYM_VISIBILITY)
++#   define MODPLUG_EXPORT __attribute__((visibility("default")))
+ #else
+ #define MODPLUG_EXPORT
+ #endif
+diff --git a/src/modplug.h b/src/modplug.h
+index 9b57ec7..d7e3e80 100644
+--- a/src/modplug.h
++++ b/src/modplug.h
+@@ -19,9 +19,8 @@ extern "C" {
+ # else
+ #   define MODPLUG_EXPORT __declspec(dllimport)			/* using libmodplug dll for windows */
+ # endif
+-/* FIXME: USE VISIBILITY ATTRIBUTES HERE */
+-#elif defined(MODPLUG_BUILD)
+-#define MODPLUG_EXPORT
++#elif defined(MODPLUG_BUILD) && defined(SYM_VISIBILITY)
++#   define MODPLUG_EXPORT __attribute__((visibility("default")))
+ #else
+ #define MODPLUG_EXPORT
+ #endif
+-- 

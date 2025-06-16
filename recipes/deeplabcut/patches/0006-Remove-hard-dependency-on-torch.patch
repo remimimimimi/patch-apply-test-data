@@ -1,0 +1,29 @@
+From 2fec605d9da0fba945567d9a148068dde6bfbbc6 Mon Sep 17 00:00:00 2001
+From: Mark Harfouche <mark.harfouche@gmail.com>
+Date: Mon, 25 Sep 2023 02:21:36 -0400
+Subject: [PATCH 6/9] Remove hard dependency on torch
+
+---
+ setup.py | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/setup.py b/setup.py
+index 609e044b..64706583 100644
+--- a/setup.py
++++ b/setup.py
+@@ -39,11 +39,10 @@ setuptools.setup(
+         "scikit-learn>=1.0",
+         "scipy>=1.9",
+         "statsmodels>=0.11",
+-        "torch",
+         "tqdm",
+         "pyyaml",
+         "Pillow>=7.1",
+-        "tables==3.8.0",
++        "tables>=3.8.0",
+     ],
+     extras_require={
+         "gui": [
+-- 
+2.43.0
+

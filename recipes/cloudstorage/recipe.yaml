@@ -1,0 +1,49 @@
+context:
+  name: cloudstorage
+  version: 0.11.0
+  python_min: "3.9"
+
+package:
+  name: ${{ name|lower }}
+  version: ${{ version }}
+
+source:
+  url: https://github.com/scottwernervt/cloudstorage/archive/refs/tags/v${{ version }}.zip
+  sha256: c624eb217a67c8c477b4951ddb41a66ebe5d93644b5f8f60c14c09cabecfb021
+  patches:
+    - setup.patch
+
+build:
+  number: 0
+  noarch: python
+  script: python -m pip install . -vv --no-deps --no-build-isolation
+
+requirements:
+  host:
+    - python ${{ python_min }}
+    - pip
+    - setuptools
+    - pytest-runner
+  run:
+    - python >=${{ python_min }}
+    - inflection >=0.3.1
+    - python-dateutil >=2.7.3
+    - python-magic >=0.4.15
+
+tests:
+  - python:
+      imports:
+        - cloudstorage
+        - cloudstorage.drivers
+      pip_check: true
+      python_version: ${{ python_min }}
+
+about:
+  summary: Unified cloud storage API for storage services.
+  license: MIT
+  license_file: LICENSE
+  homepage: https://github.com/scottwernervt/cloudstorage/
+
+extra:
+  recipe-maintainers:
+    - hadim

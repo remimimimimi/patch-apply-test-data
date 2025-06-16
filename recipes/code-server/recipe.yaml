@@ -1,0 +1,64 @@
+schema_version: 1
+
+context:
+  name: code-server
+  version: "4.100.3"
+
+package:
+  name: ${{ name|lower }}
+  version: ${{ version }}
+
+source:
+  - if: linux and x86_64
+    then:
+      url: https://github.com/coder/code-server/releases/download/v${{ version }}/code-server-${{ version }}-linux-amd64.tar.gz
+      sha256: 5c4cee53de23a1f616fddcc5a2e78ea0b3e60d0115c9b97391a33cd5fad802fa
+      target_directory: code-server
+  - if: linux and aarch64
+    then:
+      url: https://github.com/coder/code-server/releases/download/v${{ version }}/code-server-${{ version }}-linux-arm64.tar.gz
+      sha256: 970198cfc1729882a9df16631741ec4cb6cb557c76fbeab4a1fbde6fd98348b9
+      target_directory: code-server
+  - if: osx and arm64
+    then:
+      url: https://github.com/coder/code-server/releases/download/v${{ version }}/code-server-${{ version }}-macos-arm64.tar.gz
+      sha256: 447eafe6bab02ab69651db75587477090d678bc4020f3fca10ad63fcc622f2a3
+      target_directory: code-server
+
+build:
+  skip:
+    - win
+    - osx and x86_64
+  number: 0
+  dynamic_linking:
+    binary_relocation: false
+
+requirements:
+  build:
+    - ${{ compiler('cxx') }}
+    - ${{ stdlib("c") }}
+  host:
+    - nodejs 20.*
+  run:
+    - nodejs 20.*
+
+tests:
+  - script:
+      - code-server --help
+      - $CONDA_PREFIX/share/code-server/lib/vscode/node_modules/@vscode/ripgrep/bin/rg --version
+
+about:
+  license: MIT
+  license_file:
+    - code-server/LICENSE
+    - code-server/ThirdPartyNotices.txt
+  summary: Run VS Code on a remote server.
+  homepage: https://coder.com
+  repository: https://github.com/cdr/code-server
+  documentation: https://coder.com/docs/code-server
+
+extra:
+  recipe-maintainers:
+    - xhochy
+    - jtilly
+    - janjagusch

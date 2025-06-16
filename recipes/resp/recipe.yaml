@@ -1,0 +1,61 @@
+context:
+  name: resp
+  version: 1.0.0
+  git_version: 1.0
+
+package:
+  name: ${{ name|lower }}
+  version: ${{ version }}
+
+source:
+  url: https://github.com/cdsgroup/resp/archive/refs/tags/v${{ git_version }}.tar.gz
+  sha256: e3bf8a3df69e5b909877df221ce0aa3dd139c176edbcccec0a3e8a738c03a921
+  patches:
+    # The tagged version upstream did not update the setup.py version to 1.0.0.
+    - versions.patch
+
+build:
+  number: 2
+  noarch: python
+  script: ${{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - python ${{ python_min }}.*
+    - pip
+    - setuptools
+  run:
+    - numpy
+    - python >=${{ python_min }}
+    - psi4
+
+tests:
+  - python:
+      imports:
+        - resp
+      python_version: ${{ python_min }}.*
+      # disable `pip check` cuz of https://github.com/conda-forge/qcelemental-feedstock/issues/54
+      pip_check: false
+  - requirements:
+      run:
+        - pytest
+        - python ${{ python_min }}.*
+        # the tests are not reproducible with psi4 1.9 but works with 1.9.1
+        - psi4 !=1.9
+    script:
+      - if: unix
+        then:
+          - python -c "import resp, sys; sys.exit(resp.test())"
+      - python -c "import resp;assert resp.__version__ == '${{ version }}', f'{resp.__version__=} differs from recipe=\'${{ version }}\''"
+
+about:
+  license: BSD-3-Clause
+  license_file: LICENSE
+  summary: "A. Alenaizan's restrained electrostatic potential (RESP) plugin to Psi4"
+  homepage: https://github.com/cdsgroup/resp
+  repository: https://github.com/cdsgroup/resp
+
+extra:
+  recipe-maintainers:
+    - loriab
+    - hadim

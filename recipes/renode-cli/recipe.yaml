@@ -13,12 +13,13 @@ source:
       - patches/update-cores.template_NET.csproj.patch
 
 build:
-  number: 0
+  number: 2
+  skip: ppc64le
 
 requirements:
   build:
-    - dotnet
-    - nuget-license
+    - dotnet >=9
+    - nuget-license >=3.1
     - if: unix
       then:
         - sed
@@ -29,10 +30,9 @@ requirements:
         - m2-findutils
         - m2-sed
   host:
-    - dotnet
     - renode-cores ==${{ version }}
   run:
-    - dotnet
+    - dotnet >=9
 
 tests:
   - package_contents:
@@ -43,8 +43,8 @@ tests:
         - ${{ "Library/" if win }}share/renode-cli/platforms/cpus/cortex-a9.repl
         - ${{ "Library/" if win }}share/renode-cli/tools/sel4_extensions/seL4Extensions.cs
   - script:
-      - renode --help
-      - LOCAL_TEST_PREFIX=./test-bundle test-bundle/${{ "Library/" if win }}bin/renode-test test-bundle/${{ "Library/" if win }}share/renode-cli/tests/unit-tests
+        - renode --help
+        - LOCAL_TEST_PREFIX=./test-bundle test-bundle/${{ "Library/" if win }}bin/renode-test test-bundle/${{ "Library/" if win }}share/renode-cli/tests/unit-tests
     requirements:
       run:
         - robotframework >=6.1

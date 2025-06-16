@@ -1,0 +1,239 @@
+From 2e408550abfbb1ff2adea31fd4d8fb875574e27e Mon Sep 17 00:00:00 2001
+From: "H. Vetinari" <h.vetinari@gmx.com>
+Date: Wed, 4 Jan 2023 17:28:31 +1100
+Subject: [PATCH 2/2] build qdldl interface as part of osqp
+
+the default build builds qdldl as an OBJECT library and then embeds it
+into osqp directly; this is not possible for us if we want to build
+against our shared libqdldl.
+
+Since we were not building the MKL pardiso bindings correctly anyway
+we can just ignore the whole `./lin_sys` folder, or rather: just take
+out what we need and put it in the sources directly, rather than muck
+around with trying to build a separate library.
+---
+ CMakeLists.txt                                |  9 +++----
+ include/CMakeLists.txt                        |  1 +
+ .../qdldl => include}/qdldl_interface.h       |  2 +-
+ src/CMakeLists.txt                            | 26 +++++++++++++++++++
+ .../amd/include/SuiteSparse_config.h          |  0
+ .../direct/qdldl => src}/amd/include/amd.h    |  0
+ .../qdldl => src}/amd/include/amd_internal.h  |  0
+ .../amd/src/SuiteSparse_config.c              |  0
+ {lin_sys/direct/qdldl => src}/amd/src/amd_1.c |  0
+ {lin_sys/direct/qdldl => src}/amd/src/amd_2.c |  0
+ .../direct/qdldl => src}/amd/src/amd_aat.c    |  0
+ .../qdldl => src}/amd/src/amd_control.c       |  0
+ .../qdldl => src}/amd/src/amd_defaults.c      |  0
+ .../direct/qdldl => src}/amd/src/amd_info.c   |  0
+ .../direct/qdldl => src}/amd/src/amd_order.c  |  0
+ .../qdldl => src}/amd/src/amd_post_tree.c     |  0
+ .../qdldl => src}/amd/src/amd_postorder.c     |  0
+ .../qdldl => src}/amd/src/amd_preprocess.c    |  0
+ .../direct/qdldl => src}/amd/src/amd_valid.c  |  0
+ .../direct/qdldl => src}/qdldl_interface.c    |  2 +-
+ 20 files changed, 33 insertions(+), 7 deletions(-)
+ rename {lin_sys/direct/qdldl => include}/qdldl_interface.h (99%)
+ rename {lin_sys/direct/qdldl => src}/amd/include/SuiteSparse_config.h (100%)
+ rename {lin_sys/direct/qdldl => src}/amd/include/amd.h (100%)
+ rename {lin_sys/direct/qdldl => src}/amd/include/amd_internal.h (100%)
+ rename {lin_sys/direct/qdldl => src}/amd/src/SuiteSparse_config.c (100%)
+ rename {lin_sys/direct/qdldl => src}/amd/src/amd_1.c (100%)
+ rename {lin_sys/direct/qdldl => src}/amd/src/amd_2.c (100%)
+ rename {lin_sys/direct/qdldl => src}/amd/src/amd_aat.c (100%)
+ rename {lin_sys/direct/qdldl => src}/amd/src/amd_control.c (100%)
+ rename {lin_sys/direct/qdldl => src}/amd/src/amd_defaults.c (100%)
+ rename {lin_sys/direct/qdldl => src}/amd/src/amd_info.c (100%)
+ rename {lin_sys/direct/qdldl => src}/amd/src/amd_order.c (100%)
+ rename {lin_sys/direct/qdldl => src}/amd/src/amd_post_tree.c (100%)
+ rename {lin_sys/direct/qdldl => src}/amd/src/amd_postorder.c (100%)
+ rename {lin_sys/direct/qdldl => src}/amd/src/amd_preprocess.c (100%)
+ rename {lin_sys/direct/qdldl => src}/amd/src/amd_valid.c (100%)
+ rename {lin_sys/direct/qdldl => src}/qdldl_interface.c (99%)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 3a4fd856..f51c396f 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -258,8 +258,7 @@ if (R_LANG)
+ endif (R_LANG)
+ 
+ 
+-# Add linear system solvers cumulative library
+-add_subdirectory(lin_sys)
++find_package(qdldl REQUIRED)
+ 
+ include(GNUInstallDirs)
+ 
+@@ -292,15 +291,15 @@ else()
+     # Create Static or Shared Library depending on BUILD_SHARED_LIBS
+     # --------------------------------------------------------------
+ 
+-    add_library (osqp ${osqp_src} ${osqp_headers} ${linsys_solvers})
++    add_library (osqp ${osqp_src} ${osqp_headers})
+ 
+-    # Include directories for linear system solvers
+-    target_include_directories(osqp PRIVATE ${linsys_solvers_includes})
++    target_link_libraries (osqp PRIVATE qdldl)
+ 
+     # Declare include directories for the cmake exported target
+     target_include_directories(osqp
+                                PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+                                       "$<INSTALL_INTERFACE:$<INSTALL_PREFIX>/${CMAKE_INSTALL_INCLUDEDIR}/osqp>")
++    target_include_directories(osqp PRIVATE ${qdldl_interface_includes})
+ 
+     # If osqp is shared, export automatically its symbols on Windows
+     if(BUILD_SHARED_LIBS)
+diff --git a/include/CMakeLists.txt b/include/CMakeLists.txt
+index b4ed773f..d0c674ab 100644
+--- a/include/CMakeLists.txt
++++ b/include/CMakeLists.txt
+@@ -9,6 +9,7 @@ set(
+     "${CMAKE_CURRENT_SOURCE_DIR}/osqp.h"
+     "${CMAKE_CURRENT_SOURCE_DIR}/osqp_configure.h"
+     "${CMAKE_CURRENT_SOURCE_DIR}/proj.h"
++    "${CMAKE_CURRENT_SOURCE_DIR}/qdldl_interface.h"
+     "${CMAKE_CURRENT_SOURCE_DIR}/scaling.h"
+     "${CMAKE_CURRENT_SOURCE_DIR}/types.h"
+     "${CMAKE_CURRENT_SOURCE_DIR}/util.h"
+diff --git a/lin_sys/direct/qdldl/qdldl_interface.h b/include/qdldl_interface.h
+similarity index 99%
+rename from lin_sys/direct/qdldl/qdldl_interface.h
+rename to include/qdldl_interface.h
+index 7995ef36..cd829755 100644
+--- a/lin_sys/direct/qdldl/qdldl_interface.h
++++ b/include/qdldl_interface.h
+@@ -6,7 +6,7 @@ extern "C" {
+ #endif
+ 
+ #include "types.h"
+-#include "qdldl_types.h"
++#include "qdldl/qdldl_types.h"
+ 
+ /**
+  * QDLDL solver structure
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index 02bf7f1d..dd6b8dc6 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -6,6 +6,7 @@ set(
+     "${CMAKE_CURRENT_SOURCE_DIR}/lin_alg.c"
+     "${CMAKE_CURRENT_SOURCE_DIR}/osqp.c"
+     "${CMAKE_CURRENT_SOURCE_DIR}/proj.c"
++    "${CMAKE_CURRENT_SOURCE_DIR}/qdldl_interface.c"
+     "${CMAKE_CURRENT_SOURCE_DIR}/scaling.c"
+     "${CMAKE_CURRENT_SOURCE_DIR}/util.c"
+ )
+@@ -21,9 +22,34 @@ endif()
+ 
+ # Add more files that should only be in non-embedded code
+ if (NOT DEFINED EMBEDDED)
++    set(
++        amd_sources
++        ${CMAKE_CURRENT_SOURCE_DIR}/amd/include/amd_internal.h
++        ${CMAKE_CURRENT_SOURCE_DIR}/amd/include/amd.h
++        ${CMAKE_CURRENT_SOURCE_DIR}/amd/include/SuiteSparse_config.h
++        ${CMAKE_CURRENT_SOURCE_DIR}/amd/src/amd_1.c
++        ${CMAKE_CURRENT_SOURCE_DIR}/amd/src/amd_2.c
++        ${CMAKE_CURRENT_SOURCE_DIR}/amd/src/amd_aat.c
++        ${CMAKE_CURRENT_SOURCE_DIR}/amd/src/amd_control.c
++        ${CMAKE_CURRENT_SOURCE_DIR}/amd/src/amd_defaults.c
++        ${CMAKE_CURRENT_SOURCE_DIR}/amd/src/amd_info.c
++        ${CMAKE_CURRENT_SOURCE_DIR}/amd/src/amd_order.c
++        ${CMAKE_CURRENT_SOURCE_DIR}/amd/src/amd_post_tree.c
++        ${CMAKE_CURRENT_SOURCE_DIR}/amd/src/amd_postorder.c
++        ${CMAKE_CURRENT_SOURCE_DIR}/amd/src/amd_preprocess.c
++        ${CMAKE_CURRENT_SOURCE_DIR}/amd/src/amd_valid.c
++        ${CMAKE_CURRENT_SOURCE_DIR}/amd/src/SuiteSparse_config.c
++    )
++
++    set(qdldl_interface_includes
++        ${CMAKE_CURRENT_SOURCE_DIR}/amd/include
++        PARENT_SCOPE
++    )
++
+     list(
+       APPEND
+       osqp_src
++      ${amd_sources}
+       "${CMAKE_CURRENT_SOURCE_DIR}/cs.c"
+       "${CMAKE_CURRENT_SOURCE_DIR}/polish.c"
+       "${CMAKE_CURRENT_SOURCE_DIR}/lin_sys.c"
+diff --git a/lin_sys/direct/qdldl/amd/include/SuiteSparse_config.h b/src/amd/include/SuiteSparse_config.h
+similarity index 100%
+rename from lin_sys/direct/qdldl/amd/include/SuiteSparse_config.h
+rename to src/amd/include/SuiteSparse_config.h
+diff --git a/lin_sys/direct/qdldl/amd/include/amd.h b/src/amd/include/amd.h
+similarity index 100%
+rename from lin_sys/direct/qdldl/amd/include/amd.h
+rename to src/amd/include/amd.h
+diff --git a/lin_sys/direct/qdldl/amd/include/amd_internal.h b/src/amd/include/amd_internal.h
+similarity index 100%
+rename from lin_sys/direct/qdldl/amd/include/amd_internal.h
+rename to src/amd/include/amd_internal.h
+diff --git a/lin_sys/direct/qdldl/amd/src/SuiteSparse_config.c b/src/amd/src/SuiteSparse_config.c
+similarity index 100%
+rename from lin_sys/direct/qdldl/amd/src/SuiteSparse_config.c
+rename to src/amd/src/SuiteSparse_config.c
+diff --git a/lin_sys/direct/qdldl/amd/src/amd_1.c b/src/amd/src/amd_1.c
+similarity index 100%
+rename from lin_sys/direct/qdldl/amd/src/amd_1.c
+rename to src/amd/src/amd_1.c
+diff --git a/lin_sys/direct/qdldl/amd/src/amd_2.c b/src/amd/src/amd_2.c
+similarity index 100%
+rename from lin_sys/direct/qdldl/amd/src/amd_2.c
+rename to src/amd/src/amd_2.c
+diff --git a/lin_sys/direct/qdldl/amd/src/amd_aat.c b/src/amd/src/amd_aat.c
+similarity index 100%
+rename from lin_sys/direct/qdldl/amd/src/amd_aat.c
+rename to src/amd/src/amd_aat.c
+diff --git a/lin_sys/direct/qdldl/amd/src/amd_control.c b/src/amd/src/amd_control.c
+similarity index 100%
+rename from lin_sys/direct/qdldl/amd/src/amd_control.c
+rename to src/amd/src/amd_control.c
+diff --git a/lin_sys/direct/qdldl/amd/src/amd_defaults.c b/src/amd/src/amd_defaults.c
+similarity index 100%
+rename from lin_sys/direct/qdldl/amd/src/amd_defaults.c
+rename to src/amd/src/amd_defaults.c
+diff --git a/lin_sys/direct/qdldl/amd/src/amd_info.c b/src/amd/src/amd_info.c
+similarity index 100%
+rename from lin_sys/direct/qdldl/amd/src/amd_info.c
+rename to src/amd/src/amd_info.c
+diff --git a/lin_sys/direct/qdldl/amd/src/amd_order.c b/src/amd/src/amd_order.c
+similarity index 100%
+rename from lin_sys/direct/qdldl/amd/src/amd_order.c
+rename to src/amd/src/amd_order.c
+diff --git a/lin_sys/direct/qdldl/amd/src/amd_post_tree.c b/src/amd/src/amd_post_tree.c
+similarity index 100%
+rename from lin_sys/direct/qdldl/amd/src/amd_post_tree.c
+rename to src/amd/src/amd_post_tree.c
+diff --git a/lin_sys/direct/qdldl/amd/src/amd_postorder.c b/src/amd/src/amd_postorder.c
+similarity index 100%
+rename from lin_sys/direct/qdldl/amd/src/amd_postorder.c
+rename to src/amd/src/amd_postorder.c
+diff --git a/lin_sys/direct/qdldl/amd/src/amd_preprocess.c b/src/amd/src/amd_preprocess.c
+similarity index 100%
+rename from lin_sys/direct/qdldl/amd/src/amd_preprocess.c
+rename to src/amd/src/amd_preprocess.c
+diff --git a/lin_sys/direct/qdldl/amd/src/amd_valid.c b/src/amd/src/amd_valid.c
+similarity index 100%
+rename from lin_sys/direct/qdldl/amd/src/amd_valid.c
+rename to src/amd/src/amd_valid.c
+diff --git a/lin_sys/direct/qdldl/qdldl_interface.c b/src/qdldl_interface.c
+similarity index 99%
+rename from lin_sys/direct/qdldl/qdldl_interface.c
+rename to src/qdldl_interface.c
+index 43f30ef3..55eb03cd 100644
+--- a/lin_sys/direct/qdldl/qdldl_interface.c
++++ b/src/qdldl_interface.c
+@@ -1,6 +1,6 @@
+ #include "glob_opts.h"
+ 
+-#include "qdldl.h"
++#include "qdldl/qdldl.h"
+ #include "qdldl_interface.h"
+ 
+ #ifndef EMBEDDED
+-- 
+2.38.1.windows.1
+

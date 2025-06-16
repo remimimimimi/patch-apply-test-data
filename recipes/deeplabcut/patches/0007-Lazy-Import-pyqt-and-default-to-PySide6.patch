@@ -1,0 +1,55 @@
+From da3bac001b288aa10279debf2bad8f710b866852 Mon Sep 17 00:00:00 2001
+From: Mark Harfouche <mark.harfouche@gmail.com>
+Date: Mon, 25 Sep 2023 02:22:57 -0400
+Subject: [PATCH 7/9] Lazy Import pyqt and default to PySide6
+
+---
+ deeplabcut/__init__.py          | 6 ------
+ deeplabcut/gui/launch_script.py | 9 +++++----
+ 2 files changed, 5 insertions(+), 10 deletions(-)
+
+diff --git a/deeplabcut/__init__.py b/deeplabcut/__init__.py
+index b303b53f..d284658e 100644
+--- a/deeplabcut/__init__.py
++++ b/deeplabcut/__init__.py
+@@ -17,13 +17,7 @@ from deeplabcut.version import __version__, VERSION
+ 
+ 
+ try:
+-    from deeplabcut.gui.tracklet_toolbox import refine_tracklets
+     from deeplabcut.gui.launch_script import launch_dlc
+-    from deeplabcut.gui.tabs.label_frames import (
+-        label_frames,
+-        refine_labels,
+-    )
+-    from deeplabcut.gui.widgets import SkeletonBuilder
+ except (ModuleNotFoundError, ImportError):
+     pass
+ 
+diff --git a/deeplabcut/gui/launch_script.py b/deeplabcut/gui/launch_script.py
+index 9350edec..d2c49848 100644
+--- a/deeplabcut/gui/launch_script.py
++++ b/deeplabcut/gui/launch_script.py
+@@ -22,14 +22,15 @@ import sys
+ import os
+ import logging
+ 
+-import qtpy.QtWidgets as QtWidgets
+-import qdarkstyle
+ from deeplabcut.gui import BASE_DIR
+-from qtpy.QtCore import Qt
+-from qtpy.QtGui import QIcon, QPixmap
+ 
+ 
+ def launch_dlc():
++    import qtpy.QtWidgets as QtWidgets
++    from qtpy.QtCore import Qt
++    from qtpy.QtGui import QIcon, QPixmap
++    import qdarkstyle
++
+     app = QtWidgets.QApplication(sys.argv)
+     app.setWindowIcon(QIcon(os.path.join(BASE_DIR, "assets", "logo.png")))
+     screen_size = app.screens()[0].size()
+-- 
+2.43.0
+

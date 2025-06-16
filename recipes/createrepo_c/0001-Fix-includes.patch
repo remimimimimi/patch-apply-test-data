@@ -1,0 +1,315 @@
+From 685732517a445141435592451064cbfb542bbbbc Mon Sep 17 00:00:00 2001
+From: Chris Burr <christopher.burr@cern.ch>
+Date: Tue, 27 May 2025 15:56:54 +0200
+Subject: [PATCH] Fix includes
+
+---
+ tests/fixtures.h                               |  2 +-
+ tests/test_checksum.c                          |  2 +-
+ tests/test_compression_wrapper.c               |  6 +++---
+ tests/test_koji.c                              |  4 ++--
+ tests/test_load_metadata.c                     | 12 ++++++------
+ tests/test_locate_metadata.c                   |  8 ++++----
+ tests/test_misc.c                              |  6 +++---
+ tests/test_modifyrepo_shared.c                 |  4 ++--
+ tests/test_sqlite.c                            | 10 +++++-----
+ tests/test_xml_dump.c                          |  8 ++++----
+ tests/test_xml_dump_primary.c                  |  8 ++++----
+ tests/test_xml_file.c                          |  6 +++---
+ tests/test_xml_parser_filelists.c              | 10 +++++-----
+ tests/test_xml_parser_main_metadata_together.c | 10 +++++-----
+ tests/test_xml_parser_repomd.c                 |  8 ++++----
+ tests/test_xml_parser_updateinfo.c             |  8 ++++----
+ 16 files changed, 56 insertions(+), 56 deletions(-)
+
+diff --git a/tests/fixtures.h b/tests/fixtures.h
+index 885cae9..1d50853 100644
+--- a/tests/fixtures.h
++++ b/tests/fixtures.h
+@@ -128,7 +128,7 @@
+ #define TEST_UPDATEINFO_02      TEST_UPDATEINFO_FILES_PATH"updateinfo_02.xml.xz"
+ #define TEST_UPDATEINFO_03      TEST_UPDATEINFO_FILES_PATH"updateinfo_03.xml"
+ 
+-#include "createrepo/package.h"
++#include "createrepo_c/package.h"
+ 
+ cr_Package *
+ get_package()
+diff --git a/tests/test_checksum.c b/tests/test_checksum.c
+index 84046ec..0baed4c 100644
+--- a/tests/test_checksum.c
++++ b/tests/test_checksum.c
+@@ -23,7 +23,7 @@
+ #include <stdio.h>
+ #include <unistd.h>
+ #include "fixtures.h"
+-#include "createrepo/checksum.h"
++#include "createrepo_c/checksum.h"
+ 
+ static void
+ test_cr_checksum_file(void)
+diff --git a/tests/test_compression_wrapper.c b/tests/test_compression_wrapper.c
+index 797f49a..1928f66 100644
+--- a/tests/test_compression_wrapper.c
++++ b/tests/test_compression_wrapper.c
+@@ -23,9 +23,9 @@
+ #include <stdio.h>
+ #include <unistd.h>
+ #include "fixtures.h"
+-#include "createrepo/error.h"
+-#include "createrepo/misc.h"
+-#include "createrepo/compression_wrapper.h"
++#include "createrepo_c/error.h"
++#include "createrepo_c/misc.h"
++#include "createrepo_c/compression_wrapper.h"
+ 
+ #define TMP_FILE_PATTERN                        "test_XXXXXX"
+ 
+diff --git a/tests/test_koji.c b/tests/test_koji.c
+index 722ea98..478063d 100644
+--- a/tests/test_koji.c
++++ b/tests/test_koji.c
+@@ -20,8 +20,8 @@
+ 
+ #include <stdio.h>
+ #include "fixtures.h"
+-#include "createrepo/koji.h"
+-#include "createrepo/load_metadata.h"
++#include "createrepo_c/koji.h"
++#include "createrepo_c/load_metadata.h"
+ 
+ // Tests
+ 
+diff --git a/tests/test_load_metadata.c b/tests/test_load_metadata.c
+index 6f53f4b..c255dcb 100644
+--- a/tests/test_load_metadata.c
++++ b/tests/test_load_metadata.c
+@@ -21,12 +21,12 @@
+ #include <stdlib.h>
+ #include <stdio.h>
+ #include "fixtures.h"
+-#include "createrepo/error.h"
+-#include "createrepo/package.h"
+-#include "createrepo/misc.h"
+-#include "createrepo/load_metadata.h"
+-#include "createrepo/locate_metadata.h"
+-#include "createrepo/metadata_internal.h"
++#include "createrepo_c/error.h"
++#include "createrepo_c/package.h"
++#include "createrepo_c/misc.h"
++#include "createrepo_c/load_metadata.h"
++#include "createrepo_c/locate_metadata.h"
++#include "../src/metadata_internal.h"
+ 
+ #define REPO_SIZE_00    0
+ 
+diff --git a/tests/test_locate_metadata.c b/tests/test_locate_metadata.c
+index 2f0b7b3..42b829f 100644
+--- a/tests/test_locate_metadata.c
++++ b/tests/test_locate_metadata.c
+@@ -21,10 +21,10 @@
+ #include <stdlib.h>
+ #include <stdio.h>
+ #include "fixtures.h"
+-#include "createrepo/error.h"
+-#include "createrepo/package.h"
+-#include "createrepo/misc.h"
+-#include "createrepo/locate_metadata.h"
++#include "createrepo_c/error.h"
++#include "createrepo_c/package.h"
++#include "createrepo_c/misc.h"
++#include "createrepo_c/locate_metadata.h"
+ 
+ 
+ static void test_cr_cmp_metadatum_type(void)
+diff --git a/tests/test_misc.c b/tests/test_misc.c
+index c892e4b..1428464 100644
+--- a/tests/test_misc.c
++++ b/tests/test_misc.c
+@@ -23,9 +23,9 @@
+ #include <stdio.h>
+ #include <unistd.h>
+ #include "fixtures.h"
+-#include "createrepo/checksum.h"
+-#include "createrepo/misc.h"
+-#include "createrepo/error.h"
++#include "createrepo_c/checksum.h"
++#include "createrepo_c/misc.h"
++#include "createrepo_c/error.h"
+ 
+ #define PACKAGE_01              TEST_PACKAGES_PATH"super_kernel-6.0.1-2.x86_64.rpm"
+ #define PACKAGE_01_HEADER_START 280
+diff --git a/tests/test_modifyrepo_shared.c b/tests/test_modifyrepo_shared.c
+index 881bf5b..21a8094 100644
+--- a/tests/test_modifyrepo_shared.c
++++ b/tests/test_modifyrepo_shared.c
+@@ -20,8 +20,8 @@
+ 
+ #include <glib/gstdio.h>
+ #include "fixtures.h"
+-#include "createrepo/misc.h"
+-#include "createrepo/modifyrepo_shared.h"
++#include "createrepo_c/misc.h"
++#include "createrepo_c/modifyrepo_shared.h"
+ 
+ static void 
+ copy_repo_TEST_REPO_00(const gchar *target_path, const gchar *tmp){
+diff --git a/tests/test_sqlite.c b/tests/test_sqlite.c
+index 1814b2e..30d140f 100644
+--- a/tests/test_sqlite.c
++++ b/tests/test_sqlite.c
+@@ -24,11 +24,11 @@
+ #include <unistd.h>
+ #include <sqlite3.h>
+ #include "fixtures.h"
+-#include "createrepo/misc.h"
+-#include "createrepo/package.h"
+-#include "createrepo/sqlite.h"
+-#include "createrepo/parsepkg.h"
+-#include "createrepo/constants.h"
++#include "createrepo_c/misc.h"
++#include "createrepo_c/package.h"
++#include "createrepo_c/sqlite.h"
++#include "createrepo_c/parsepkg.h"
++#include "createrepo_c/constants.h"
+ 
+ #define TMP_DIR_PATTERN         "/tmp/createrepo_test_XXXXXX"
+ #define TMP_PRIMARY_NAME        "primary.sqlite"
+diff --git a/tests/test_xml_dump.c b/tests/test_xml_dump.c
+index dd6fe1c..e6fb028 100644
+--- a/tests/test_xml_dump.c
++++ b/tests/test_xml_dump.c
+@@ -3,10 +3,10 @@
+ #include <stdlib.h>
+ #include <stdio.h>
+ #include "fixtures.h"
+-#include "createrepo/error.h"
+-#include "createrepo/package.h"
+-#include "createrepo/misc.h"
+-#include "createrepo/xml_dump.h"
++#include "createrepo_c/error.h"
++#include "createrepo_c/package.h"
++#include "createrepo_c/misc.h"
++#include "createrepo_c/xml_dump.h"
+ 
+ // Tests
+ 
+diff --git a/tests/test_xml_dump_primary.c b/tests/test_xml_dump_primary.c
+index 10c4e7b..18217d2 100644
+--- a/tests/test_xml_dump_primary.c
++++ b/tests/test_xml_dump_primary.c
+@@ -2,10 +2,10 @@
+ #include <stdlib.h>
+ #include <stdio.h>
+ #include "fixtures.h"
+-#include "createrepo/error.h"
+-#include "createrepo/load_metadata.h"
+-#include "createrepo/misc.h"
+-#include "createrepo/xml_dump_primary.c"
++#include "createrepo_c/error.h"
++#include "createrepo_c/load_metadata.h"
++#include "createrepo_c/misc.h"
++#include "../src/xml_dump_primary.c"
+ 
+ #define IF_NULL_EMPTY(x) (x) ? x : ""
+ 
+diff --git a/tests/test_xml_file.c b/tests/test_xml_file.c
+index 4647d8b..f704fd4 100644
+--- a/tests/test_xml_file.c
++++ b/tests/test_xml_file.c
+@@ -25,9 +25,9 @@
+ #include <stdio.h>
+ #include <unistd.h>
+ #include "fixtures.h"
+-#include "createrepo/misc.h"
+-#include "createrepo/xml_file.h"
+-#include "createrepo/compression_wrapper.h"
++#include "createrepo_c/misc.h"
++#include "createrepo_c/xml_file.h"
++#include "createrepo_c/compression_wrapper.h"
+ 
+ typedef struct {
+     gchar *tmpdir;
+diff --git a/tests/test_xml_parser_filelists.c b/tests/test_xml_parser_filelists.c
+index 95d6ce1..6cad20b 100644
+--- a/tests/test_xml_parser_filelists.c
++++ b/tests/test_xml_parser_filelists.c
+@@ -21,11 +21,11 @@
+ #include <stdlib.h>
+ #include <stdio.h>
+ #include "fixtures.h"
+-#include "createrepo/error.h"
+-#include "createrepo/package.h"
+-#include "createrepo/misc.h"
+-#include "createrepo/xml_parser.h"
+-#include "createrepo/xml_parser_internal.h"
++#include "createrepo_c/error.h"
++#include "createrepo_c/package.h"
++#include "createrepo_c/misc.h"
++#include "createrepo_c/xml_parser.h"
++#include "../src/xml_parser_internal.h"
+ 
+ //This functions assumes there is enough space in the buffer for the read file plus a terminating NULL
+ static int
+diff --git a/tests/test_xml_parser_main_metadata_together.c b/tests/test_xml_parser_main_metadata_together.c
+index 2fc07c2..0fe24b2 100644
+--- a/tests/test_xml_parser_main_metadata_together.c
++++ b/tests/test_xml_parser_main_metadata_together.c
+@@ -22,11 +22,11 @@
+ #include <stdlib.h>
+ #include <stdio.h>
+ #include "fixtures.h"
+-#include "createrepo/error.h"
+-#include "createrepo/package.h"
+-#include "createrepo/misc.h"
+-#include "createrepo/xml_parser.h"
+-#include "createrepo/xml_parser_internal.h"
++#include "createrepo_c/error.h"
++#include "createrepo_c/package.h"
++#include "createrepo_c/misc.h"
++#include "createrepo_c/xml_parser.h"
++#include "../src/xml_parser_internal.h"
+ 
+ // Callbacks
+ static int
+diff --git a/tests/test_xml_parser_repomd.c b/tests/test_xml_parser_repomd.c
+index 2da56ec..985fe86 100644
+--- a/tests/test_xml_parser_repomd.c
++++ b/tests/test_xml_parser_repomd.c
+@@ -21,10 +21,10 @@
+ #include <stdlib.h>
+ #include <stdio.h>
+ #include "fixtures.h"
+-#include "createrepo/error.h"
+-#include "createrepo/repomd.h"
+-#include "createrepo/misc.h"
+-#include "createrepo/xml_parser.h"
++#include "createrepo_c/error.h"
++#include "createrepo_c/repomd.h"
++#include "createrepo_c/misc.h"
++#include "createrepo_c/xml_parser.h"
+ 
+ // Callbacks
+ 
+diff --git a/tests/test_xml_parser_updateinfo.c b/tests/test_xml_parser_updateinfo.c
+index 2f7b93d..496bed4 100644
+--- a/tests/test_xml_parser_updateinfo.c
++++ b/tests/test_xml_parser_updateinfo.c
+@@ -21,10 +21,10 @@
+ #include <stdlib.h>
+ #include <stdio.h>
+ #include "fixtures.h"
+-#include "createrepo/error.h"
+-#include "createrepo/misc.h"
+-#include "createrepo/xml_parser.h"
+-#include "createrepo/updateinfo.h"
++#include "createrepo_c/error.h"
++#include "createrepo_c/misc.h"
++#include "createrepo_c/xml_parser.h"
++#include "createrepo_c/updateinfo.h"
+ 
+ // Tests
+ 
+-- 
+2.49.0
+

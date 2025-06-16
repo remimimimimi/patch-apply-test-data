@@ -11,7 +11,7 @@ source:
     sha256: 905f76ad1fa9e4ae0eb28232cac98afdb96c479666202c5a4c27871fb30a2711
     target_directory: vectorscan
     patches:
-      - 0001-fix-the-pcre-version-check-error-on-clang-16.patch
+      - 0001-fix-the-pcre-versio-check-error-on-clang-16.patch
 # chimera requires the pcre sources to be available during the build
   - url: https://sourceforge.net/projects/pcre/files/pcre/${{ pcre_version }}/pcre-${{ pcre_version }}.tar.gz/download
     sha256: 4e6ce03e0336e8b4a3d6c2b70b1c5e18590a5673a98186da90d4f33c23defc09

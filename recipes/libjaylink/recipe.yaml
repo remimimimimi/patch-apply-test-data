@@ -1,7 +1,7 @@
 context:
   name: libjaylink
   version: "0.4.0"
-  build_num: 0
+  build_num: 1
   so_version: "0.2.1"
   major_so_version: "0"
 
@@ -15,6 +15,7 @@ source:
   patches:
     - if: win
       then:
+        # It would be great to upstream these patches
         - patches/add-jaylink.def.patch
         - patches/add-jaylink.lib-meson.build.patch
         - patches/enable-dynamic-library.patch
@@ -34,6 +35,7 @@ requirements:
   build:
     - ${{ compiler('c') }}
     - ${{ stdlib('c') }}
+    - meson >=1.1.0
     - ninja
     - pkg-config
     - if: win
@@ -41,8 +43,8 @@ requirements:
         - m2w64-binutils
   host:
     - libusb
-    - meson >=1.1.0
   run_exports:
+    # This may be too stringent as API (i.e. 0.4.0) differs from ABI (i.e. 0.2.1)
     - ${{ pin_subpackage('libjaylink', upper_bound='x.x') }}
 
 tests:

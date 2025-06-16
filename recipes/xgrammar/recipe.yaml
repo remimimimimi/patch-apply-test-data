@@ -2,7 +2,7 @@ schema_version: 1
 
 context:
   name: xgrammar
-  version: 0.1.18
+  version: "0.1.19"
 
 package:
   name: ${{ name|lower }}
@@ -10,7 +10,7 @@ package:
 
 source:
   url: https://pypi.org/packages/source/${{ name[0] }}/${{ name }}/xgrammar-${{ version }}.tar.gz
-  sha256: a0438a0f9262fff1d0e4f184268eb759f094243edce92b67eb7aa5f245c47471
+  sha256: 75bf3e814283b1cbaee9252234c5d4081f0058d29b26d8984f1cdf031c99b775
   patches:
     - patches/001_remove_ninja_dep.patch
 
@@ -62,7 +62,7 @@ requirements:
     - transformers >=4.38.0
     - if: linux and x86_64
       then: triton
-    - if: darwin and arm64
+    - if: osx and arm64
       then: mlx-lm
 
 tests:

@@ -1,0 +1,49 @@
+context:
+  name: guacamol
+  version: 0.5.5
+
+package:
+  name: ${{ name|lower }}
+  version: ${{ version }}
+
+source:
+  url: https://pypi.org/packages/source/${{ name[0] }}/${{ name }}/guacamol-${{ version }}.tar.gz
+  sha256: 2c945d26a0898e0d9c4083c316a129b62f3a9d0bb6f537f3d311e83096fad966
+  patches:
+    - rdkit-dep.patch
+
+build:
+  number: 0
+  noarch: python
+  script: ${{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - python ${{ python_min }}.*
+    - pip
+    - setuptools
+  run:
+    - python >=${{ python_min }}
+    - joblib >=0.12.5
+    - numpy >=1.15.2
+    - scipy >=1.1.0
+    - tqdm >=4.26.0
+    - fcd >=1.1
+    - rdkit
+
+tests:
+  - python:
+      imports:
+        - guacamol
+        - guacamol.data
+      python_version: ${{ python_min }}.*
+
+about:
+  summary: 'Guacamol: benchmarks for de novo molecular design'
+  license: MIT
+  license_file: LICENSE
+  homepage: https://github.com/BenevolentAI/guacamol
+
+extra:
+  recipe-maintainers:
+    - hadim

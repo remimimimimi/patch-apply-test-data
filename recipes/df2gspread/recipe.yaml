@@ -1,0 +1,48 @@
+context:
+  name: df2gspread
+  version: 1.0.4
+
+package:
+  name: ${{ name|lower }}
+  version: ${{ version }}
+
+source:
+  url: https://pypi.org/packages/source/${{ name[0] }}/${{ name }}/${{ name }}-${{ version }}.tar.gz
+  sha256: fa18a06b2d8b815ac3e437150ba6d1a88612af1d7a528e0c305577c304fafc7a
+  patches:
+    - fix-setup.patch
+
+build:
+  number: 1003
+  noarch: python
+  script: ${{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - python ${{ python_min }}.*
+    - setuptools
+    - pip
+  run:
+    - python >=${{ python_min }}
+    - google-api-python-client
+    - gspread
+    - oauth2client
+    - pandas
+
+tests:
+  - python:
+      imports:
+        - df2gspread
+      python_version: ${{ python_min }}.*
+
+about:
+  license: GPL-3.0-or-later
+  summary: Manage Google Spreadsheets in Pandas DataFrame with Python
+  license_file: LICENSE
+  homepage: https://github.com/maybelinot/df2gspread
+  repository: https://github.com/maybelinot/df2gspread
+  documentation: http://df2gspread.readthedocs.io
+
+extra:
+  recipe-maintainers:
+    - hadim

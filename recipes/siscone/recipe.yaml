@@ -1,0 +1,150 @@
+context:
+  name: "siscone"
+  version: "3.1.1"
+
+package:
+  name: ${{ name }}
+  version: ${{ version }}
+
+source:
+  url: https://gitlab.com/fastjet/siscone/-/archive/siscone-${{ version }}/siscone-siscone-${{ version }}.tar.gz
+  sha256: 270cc6821f1614a69a60a21224b6415081f02374256a2f1c70d39ec717fd96a0
+  patches: remove-getopt-required.patch
+
+build:
+  number: 3
+  script:
+    # Get an updated config.sub and config.guess
+    - if: unix
+      then: cmake "${CMAKE_ARGS}" -DCMAKE_INSTALL_PREFIX="${PREFIX}" -S . -B build
+    - if: win
+      then: cmake %CMAKE_ARGS% -S . -B build
+    - cmake -LH build
+    - if: unix
+      then: cmake --build build --parallel="${CPU_COUNT}"
+    - if: win
+      then: cmake --build build --config=Release --parallel="%CPU_COUNT%"
+    - cmake --install build
+
+requirements:
+  run_exports:
+    - ${{ pin_subpackage('siscone', upper_bound='x.x') }}
+  build:
+    - ${{ stdlib('c') }}
+    - ${{ compiler('cxx') }}
+    - cmake
+    - if: unix
+      then: make
+    - if: win
+      then: getopt-win32
+
+
+tests:
+  - package_contents:
+      include:
+        - siscone/config.h
+        - siscone/geom_2d.h
+        - siscone/defines.h
+        - siscone/circulator.h
+        - siscone/area.h
+        - siscone/ranlux.h
+        - siscone/quadtree.h
+        - siscone/protocones.h
+        - siscone/momentum.h
+        - siscone/hash.h
+        - siscone/vicinity.h
+        - siscone/split_merge.h
+        - siscone/siscone.h
+        - siscone/siscone_error.h
+        - siscone/reference.h
+        - siscone/spherical/geom_2d.h
+        - siscone/spherical/vicinity.h
+        - siscone/spherical/split_merge.h
+        - siscone/spherical/siscone.h
+        - siscone/spherical/protocones.h
+        - siscone/spherical/momentum.h
+        - siscone/spherical/hash.h
+      lib:
+        - if: unix
+          then:
+            - siscone
+            - siscone_spherical
+        - if: win
+          then:
+            - siscone.lib
+            - siscone_spherical.lib
+  - script:
+    - if: unix
+      then:
+        - cd examples/
+        - $CXX main.cpp options.cpp -o main $CXXFLAGS $LDFLAGS -lsiscone
+        - ./main
+        - $CXX area.cpp options.cpp -o area $CXXFLAGS $LDFLAGS -lsiscone
+        - ./area
+        - $CXX sample.cpp -o sample $CXXFLAGS $LDFLAGS -lsiscone
+        - ./sample
+        - $CXX test.cpp -o test $CXXFLAGS $LDFLAGS -lsiscone
+        - ./test
+        - $CXX times.cpp -o times $CXXFLAGS $LDFLAGS -lsiscone
+        - if: build_platform == target_platform
+          then: ./times
+        - $CXX spherical.cpp -o spherical $CXXFLAGS $LDFLAGS -lsiscone -lsiscone_spherical
+        - ./spherical
+    - if: win
+      then:
+        - cd examples
+        - ..\build\examples\Release\siscone_main.exe
+        - ..\build\examples\Release\siscone_area.exe
+        - ..\build\examples\Release\sample.exe
+        - ..\build\examples\Release\siscone_test.exe
+        - if: build_platform == target_platform
+          then: ..\build\examples\Release\times.exe
+        - ..\build\examples\Release\spherical.exe
+    files:
+      source:
+        - if: win
+          then:
+            - build/examples/Release/siscone_main.exe
+            - build/examples/Release/siscone_area.exe
+            - build/examples/Release/sample.exe
+            - build/examples/Release/siscone_test.exe
+            - build/examples/Release/times.exe
+            - build/examples/Release/spherical.exe
+        - if: unix
+          then:
+            - examples/main.cpp
+            - examples/options.cpp
+            - examples/options.h
+            - examples/area.cpp
+            - examples/sample.cpp
+            - examples/test.cpp
+            - examples/times.cpp
+            - examples/spherical.cpp
+        - examples/events/single-event.dat
+    requirements:
+      run:
+        - if: win
+          then: getopt-win32
+        - if: unix
+          then: ${{ compiler('cxx') }}
+
+about:
+  homepage: https://gitlab.com/fastjet/siscone
+  summary: 'SISCone: the Seedless Infrared Safe Cone Jet Algorithm'
+  description: |
+    SISCone was written by Gavin Salam and Gregory Soyez.
+
+    A description of the algorithm is available in the publication
+    JHEP 05 (2007) 086
+    [[arXiv:0704.0292](https://arxiv.org/abs/0704.0292) (hep-ph)].
+    DOI: [10.1088/1126-6708/2007/05/086](https://doi.org/10.1088/1126-6708/2007/05/086)
+  license: AGPL-1.0-only
+  license_family: AGPL
+  license_file: COPYING
+  repository: https://gitlab.com/fastjet/siscone
+
+extra:
+  recipe-maintainers:
+    - lgray
+    - kratsg
+    - matthewfeickert

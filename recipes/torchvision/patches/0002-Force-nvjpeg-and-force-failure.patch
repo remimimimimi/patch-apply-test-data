@@ -24,7 +24,7 @@ index 3b4e17a..e993e0c 100644
 -            Extension = CUDAExtension
 -        else:
 -            warnings.warn("Building torchvision without NVJPEG support")
-+        # conda-forge supports cross compilation of nvjpeg which isn't
++        # conda-forge supports cross compilation of nvjpeg whic isn't
 +        # Really supported upstream
 +        print("Building torchvision with NVJPEG image support")
 +        libraries.append("nvjpeg")

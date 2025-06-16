@@ -1,0 +1,84 @@
+schema_version: 1
+
+context:
+  version: 0.18.1
+  sha256: a4152ac5a084d499c28a7797be0628d8366c336e2fb0e1a063eb32e55efcb8e7
+
+package:
+  name: scikit-build
+  version: ${{ version }}
+
+source:
+  url: https://pypi.org/packages/source/s/scikit-build/scikit_build-${{ version }}.tar.gz
+  sha256: ${{ sha256 }}
+  patches:
+    - tests.patch
+
+build:
+  number: 2
+  noarch: python
+  script: ${{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv
+
+requirements:
+  host:
+    - hatch-fancy-pypi-readme
+    - hatch-vcs
+    - hatchling
+    - pip
+    - python ${{ python_min }}.*
+  run:
+    - distro
+    - packaging
+    - python >=${{ python_min }}
+    - setuptools
+    - tomli
+    - typing-extensions
+    - wheel
+
+tests:
+  - python:
+      imports:
+        - skbuild
+      python_version: ${{ python_min }}.*
+      pip_check: true
+  - files:
+      source:
+        - tests/*
+        - pyproject.toml
+    requirements:
+      run:
+        - ${{ compiler('c') }}
+        - ${{ compiler('cxx') }}
+        - cmake
+        - cython
+        - git
+        - make
+        - path.py
+        - pip
+        - pytest
+        - pytest-cov
+        - pytest-mock
+        - requests
+        - setuptools
+        - virtualenv
+        - wheel
+        - python ${{ python_min }}.*
+    script:
+      file: run_test
+
+about:
+  license: MIT
+  license_file: LICENSE
+  summary: Improved build system generator for CPython C extensions.
+  homepage: http://github.com/scikit-build/scikit-build
+  repository: http://github.com/scikit-build/scikit-build
+  documentation: http://scikit-build.readthedocs.org
+
+extra:
+  recipe-maintainers:
+    - isuruf
+    - scopatz
+    - jcfr
+    - msarahan
+    - henryiii
+    - mayeut

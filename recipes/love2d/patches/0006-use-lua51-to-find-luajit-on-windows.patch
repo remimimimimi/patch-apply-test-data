@@ -1,0 +1,25 @@
+From 3852bbc01da900cc19b62b3c09a6d003ac6d8b87 Mon Sep 17 00:00:00 2001
+From: Bas Zalmstra <4995967+baszalmstra@users.noreply.github.com>
+Date: Tue, 27 May 2025 13:58:04 +0200
+Subject: [PATCH] use lua51 to find luajit on windows
+
+---
+ extra/cmake/FindLuaJIT.cmake | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/extra/cmake/FindLuaJIT.cmake b/extra/cmake/FindLuaJIT.cmake
+index 14b03b6c..3b176f8e 100644
+--- a/extra/cmake/FindLuaJIT.cmake
++++ b/extra/cmake/FindLuaJIT.cmake
+@@ -15,7 +15,7 @@ find_path(LUAJIT_INCLUDE_DIR
+ 	PATHS ${LUAJIT_SEARCH_PATHS})
+ 
+ find_library(LUAJIT_LIBRARY
+-	NAMES luajit-5.1
++	NAMES luajit-5.1 lua51
+ 	PATH_SUFFIXES lib
+ 	PATHS ${LUAJIT_SEARCH_PATHS})
+ 
+-- 
+2.45.1.windows.1
+

@@ -1,0 +1,67 @@
+schema_version: 1
+
+context:
+  name: label-studio-sdk
+  version: "1.0.12"
+
+package:
+  name: ${{ name|lower }}
+  version: ${{ version }}
+
+source:
+  - url: https://pypi.org/packages/source/${{ name[0] }}/${{ name }}/${{ name | replace('-', '_') }}-${{ version }}.tar.gz
+    sha256: b02db9cba8075cc01cfee5145c29f0cce9c370a0cdd5918de892987e6a18453b
+
+build:
+  number: 0
+  noarch: python
+  script: ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+
+requirements:
+  host:
+    - python ${{ python_min }}.*
+    - pip
+    - poetry
+  run:
+    - python >=${{ python_min }}
+    - Pillow >=10.0.1
+    - appdirs >=1.4.3
+    - httpx >=0.21.2
+    - ijson >=3.2.3
+    - jsf >=0.11.2
+    - jsonschema >=4.23.0
+    - lxml >=4.2.5
+    - nltk >=3.9.1
+    - numpy >=1.26.4,<2.0.0
+    - pandas >=0.24.0
+    - pydantic >=1.9.2
+    - pydantic-core >=2.18.2
+    - pyjwt >=2.10.1
+    - requests >=2.22.0
+    - requests-mock ==1.12.1
+    - typing_extensions >=4.0.0
+    - ujson >=5.8.0
+    - xmljson ==0.2.1
+    - datamodel-code-generator ==0.26.1
+
+tests:
+  - python:
+      imports:
+        - label_studio_sdk
+  - requirements:
+      run:
+        - python ${{ python_min }}
+        - pip
+    script:
+      - pip check
+
+about:
+  summary: Label Studio annotation tool
+  license: Apache-2.0
+  license_file: LICENSE
+  homepage: https://github.com/heartexlabs/label-studio-sdk
+
+extra:
+  recipe-maintainers:
+    - moritzwilksch
+    - CharalamposGeorgiadis

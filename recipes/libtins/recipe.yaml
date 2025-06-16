@@ -1,0 +1,57 @@
+context:
+  name: libtins
+  version: "4.5"
+
+package:
+  name: ${{ name|lower }}
+  version: ${{ version }}
+
+source:
+  url: https://github.com/mfontanini/${{ name|lower }}/archive/refs/tags/v${{ version }}.tar.gz
+  sha256: 6ff5fe1ada10daef8538743dccb9c9b3e19d05d028ffdc24838e62ff3fc55841
+  patches:
+    - 0001-fix-cmake-minimum-required-version.patch 
+
+build:
+  number: 1
+
+requirements:
+  build:
+    - cmake
+    - ${{ compiler('cxx') }}
+    - ${{ stdlib("c") }}
+    - ninja
+
+  host:
+    - libpcap
+    - if: osx
+      then:
+        - openssl
+
+  run_exports:
+    - ${{ pin_subpackage('libtins', upper_bound='x') }}
+
+tests:
+  - package_contents:
+      include:
+        - tins/tins.h
+      lib:
+        - tins
+
+about:
+  homepage: https://github.com/mfontanini/libtins
+  license: BSD-2-Clause
+  license_file: LICENSE
+  summary: libtins is a high-level, multiplatform C++ network packet sniffing and crafting library
+  description: |
+    Its main purpose is to provide the C++ developer an easy,
+    efficient, platform and endianess-independent way to create tools
+    which need to send, receive and manipulate specially crafted
+    packets.
+
+extra:
+  recipe-maintainers:
+    - costrouc
+    - tylerpotts
+    - wolfv
+    - wep21

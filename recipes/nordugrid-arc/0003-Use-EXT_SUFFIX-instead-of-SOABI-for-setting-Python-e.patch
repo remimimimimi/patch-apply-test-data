@@ -26,7 +26,7 @@ index 10bba14..c6782fb 100644
 -    AC_SUBST(PYTHON_SOABI)
 +    AC_SUBST(PYTHON_EXT_SUFFIX)
  
-     AC_ARG_WITH(python-site-arch, AC_HELP_STRING([--with-python-site-arch=directory], [Directory where Python modules will be installed - defaults is to query the Python binary]))
+     AC_ARG_WITH(python-site-arch, AC_HELP_STRING([--with-python-site-arch=directory], [Direcory where Python modules will be installed - defaults is to query the Python binary]))
      if test "X$PYTHON_SITE_ARCH" = "X"; then
 @@ -548,8 +548,8 @@ if test "$enables_altpython" = "yes"; then
      AC_SUBST(ALTPYTHON_CFLAGS)
@@ -37,7 +37,7 @@ index 10bba14..c6782fb 100644
 +    ALTPYTHON_EXT_SUFFIX=`$ALTPYTHON -c "from distutils import sysconfig; print(sysconfig.get_config_vars().get('EXT_SUFFIX'))" | sed s/None//`
 +    AC_SUBST(ALTPYTHON_EXT_SUFFIX)
  
-     AC_ARG_WITH(altpython-site-arch, AC_HELP_STRING([--with-altpython-site-arch=directory], [Directory where Python modules will be installed - defaults is to query the Python binary]))
+     AC_ARG_WITH(altpython-site-arch, AC_HELP_STRING([--with-altpython-site-arch=directory], [Direcory where Python modules will be installed - defaults is to query the Python binary]))
      if test "X$ALTPYTHON_SITE_ARCH" = "X"; then
 diff --git a/python/altpython/arc/Makefile.am b/python/altpython/arc/Makefile.am
 index 399f490..71a087d 100644

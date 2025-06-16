@@ -1,0 +1,73 @@
+context:
+  version: 1.0.0
+  qdldlversion: 0.1.8
+
+package:
+  name: libosqp
+  version: ${{ version }}
+
+source:
+  url: https://github.com/osqp/osqp/archive/refs/tags/v${{ version }}.tar.gz
+  sha256: dd6a1c2e7e921485697d5e7cdeeb043c712526c395b3700601f51d472a7d8e48
+  patches:
+    # use libqdldl from conda-forge, build interface in osqp directly
+    # - patches/0002-build-qdldl-interface-as-part-of-osqp.patch
+      # install osqp_demo and osqp_tester executables to easily make them relocatable,
+      # see: https://github.com/conda-forge/libosqp-feedstock/pull/12#discussion_r1807117589
+    - patches/0001-Install-osqp_demo-and-osqp_tester.patch
+    - patches/0003-change-path-to-testcodes-dir.patch
+    - patches/0004-expose-missing-functions-windows-backport-744.patch
+
+build:
+  number: 2
+requirements:
+  build:
+    - ${{ compiler('c') }}
+    - ${{ compiler('cxx') }}
+    - ${{ stdlib('c') }}
+    - cmake
+    - ninja
+    # Unittest source code is generated at build time using numpy and scipy
+    - python
+    - numpy
+    - scipy
+  host:
+    - libqdldl =${{ qdldlversion }}
+  run_exports:
+    # No ABI policy is documented, let's be conservative
+    - ${{ pin_subpackage('libosqp', upper_bound='x.x.x') }}
+  ignore_run_exports:
+    by_name:
+      - numpy
+
+tests:
+  - package_contents:
+      lib:
+        - osqp
+      include:
+        - osqp/osqp.h
+      files:
+        - if: win
+          then: |
+            Library\lib\cmake\osqp\osqp-config.cmake
+          else: |
+            lib/cmake/osqp/osqp-config.cmake
+  - script:
+    - if: win
+      then: mkdir testcodes\embedded1 testcodes\embedded2
+      else: mkdir -p ./testcodes/embedded1 ./testcodes/embedded2
+    - osqp_demo
+    - osqp_tester
+
+about:
+  homepage: https://github.com/osqp/osqp
+  license: Apache-2.0
+  summary: The Operator Splitting QP Solver.
+  license_file:
+    - LICENSE
+    - algebra/_common/lin_sys/qdldl/amd/LICENSE
+
+extra:
+  recipe-maintainers:
+    - traversaro
+    - h-vetinari

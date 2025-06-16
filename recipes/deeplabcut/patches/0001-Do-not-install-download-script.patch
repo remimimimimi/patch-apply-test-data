@@ -1,0 +1,24 @@
+From ae13e2bccef0965d8e8d07a4fd32b9d56dd7b3ba Mon Sep 17 00:00:00 2001
+From: Mark Harfouche <mark.harfouche@gmail.com>
+Date: Mon, 25 Sep 2023 02:17:35 -0400
+Subject: [PATCH 1/9] Do not install download script
+
+---
+ setup.py | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/setup.py b/setup.py
+index 3070f5bb..609e044b 100644
+--- a/setup.py
++++ b/setup.py
+@@ -67,7 +67,6 @@ setuptools.setup(
+         ],
+         "modelzoo": ["huggingface_hub"],
+     },
+-    scripts=["deeplabcut/pose_estimation_tensorflow/models/pretrained/download.sh"],
+     packages=setuptools.find_packages(),
+     data_files=[
+         (
+-- 
+2.43.0
+

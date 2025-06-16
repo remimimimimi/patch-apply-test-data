@@ -1,0 +1,91 @@
+context:
+  version: 2.3.11
+
+package:
+  name: deeplabcut
+  version: ${{ version }}
+
+source:
+  url: https://pypi.org/packages/source/d/deeplabcut/deeplabcut-${{ version }}.tar.gz
+  sha256: 0d77464eeb984a702d8b25f28ecc4444baef73b7bec72d79e2f00fecda188189
+  patches:
+    - patches/0001-Do-not-install-download-script.patch
+    - patches/0002-Silence-warnings-about-DLC-lite-mode.patch
+    - patches/0003-Do-not-modify-tensorflow-warnings.patch
+    - patches/0004-Silence-warnings-about-missing-pytorch.patch
+    - patches/0005-Use-qtpy-instead-of-PySide6.patch
+    - patches/0006-Remove-hard-dependency-on-torch.patch
+    - patches/0007-Lazy-Import-pyqt-and-default-to-PySide6.patch
+    - patches/0008-add-outputs-for-multi-animal-model-export.patch
+    - patches/0009-Loosen-dependencies.patch
+
+build:
+  # Confirm with upstream before making this entry point
+  # https://github.com/DeepLabCut/DeepLabCut/pull/1547
+  number: 0
+  noarch: python
+  script: ${{ PYTHON }} -m pip install . -vv --no-deps
+  python:
+    entry_points:
+      - dlc = deeplabcut.cli:main
+      - deeplabcut = deeplabcut.gui.launch_script:launch_dlc
+
+requirements:
+  host:
+    - python  ${{ python_min }}.*
+    - pip
+  run:
+    - python  >=${{ python_min }}
+    - setuptools
+    - dlclibrary >=0.0.6
+    - filterpy >=1.4.4
+    - ruamel.yaml >=0.15.0
+    - imageio-ffmpeg
+    - imgaug >=0.4.0
+    - numba >=0.54
+    - matplotlib-base >=3.3,!=3.7.0,!=3.7.1
+    - networkx >=2.6
+    # I (hmaarrfk) am going to ignore their numpy less than 2 pin
+    # https://github.com/DeepLabCut/DeepLabCut/pull/2827#issuecomment-2663911081
+    - numpy >=1.18.5
+    - pandas >=1.0.1,!=1.5.0
+    - pyyaml
+    - scikit-image >=0.17
+    - scikit-learn >=1.0
+    # They actually have a lowerbound on scipy 1.9 but I feel like scipy 1.9 is
+    # a little buggy on conda-forge
+    - scipy >=1.10
+    - statsmodels >=0.11
+    - pytables >=3.8.0
+    - tf_slim >=1.1.0
+    - tensorpack >=0.11
+    - tqdm
+    - pillow >=7.1
+    # They don't explicitely depend on opencv in their requirements
+    # but they import it...
+    - opencv
+  run_constraints:
+    - napari-deeplabcut >=0.2.1.6
+    - tensorflow >=2.0
+
+tests:
+  - script:
+      - pip check
+      - python -c "import deeplabcut"
+    requirements:
+      run:
+        - pip
+        - python ${{ python_min }}.*
+        # Avoid opengl requirements
+        - opencv *=headless*
+
+about:
+  license: LGPL-3.0-only
+  license_file: LICENSE
+  summary: DeepLabCut is a toolbox for markerless pose estimation of animals performing various tasks.
+  homepage: https://www.deeplabcut.org
+  repository: https://github.com/DeepLabCut/DeepLabCut
+
+extra:
+  recipe-maintainers:
+    - hmaarrfk

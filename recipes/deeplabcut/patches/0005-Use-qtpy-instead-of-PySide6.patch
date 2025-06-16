@@ -1,0 +1,392 @@
+From 4f9c7820b5996e3705b6bcd1b6b3f5ec067579fa Mon Sep 17 00:00:00 2001
+From: Mark Harfouche <mark.harfouche@gmail.com>
+Date: Mon, 25 Sep 2023 02:20:58 -0400
+Subject: [PATCH 5/9] Use qtpy instead of PySide6
+
+---
+ deeplabcut/__main__.py                          |  2 +-
+ deeplabcut/gui/__init__.py                      |  3 ---
+ deeplabcut/gui/components.py                    |  4 ++--
+ deeplabcut/gui/launch_script.py                 |  6 +++---
+ deeplabcut/gui/tabs/analyze_videos.py           |  4 ++--
+ deeplabcut/gui/tabs/create_project.py           |  4 ++--
+ deeplabcut/gui/tabs/create_training_dataset.py  |  6 +++---
+ deeplabcut/gui/tabs/create_videos.py            |  4 ++--
+ deeplabcut/gui/tabs/evaluate_network.py         |  4 ++--
+ deeplabcut/gui/tabs/extract_frames.py           |  4 ++--
+ deeplabcut/gui/tabs/extract_outlier_frames.py   |  4 ++--
+ deeplabcut/gui/tabs/label_frames.py             |  5 ++---
+ deeplabcut/gui/tabs/manage_project.py           |  4 ++--
+ deeplabcut/gui/tabs/modelzoo.py                 |  7 ++++---
+ deeplabcut/gui/tabs/open_project.py             |  6 +++---
+ deeplabcut/gui/tabs/refine_tracklets.py         |  4 ++--
+ deeplabcut/gui/tabs/train_network.py            |  6 +++---
+ deeplabcut/gui/tabs/unsupervised_id_tracking.py |  4 ++--
+ deeplabcut/gui/tabs/video_editor.py             |  4 ++--
+ deeplabcut/gui/tracklet_toolbox.py              |  4 ++--
+ deeplabcut/gui/utils.py                         |  2 +-
+ deeplabcut/gui/widgets.py                       |  4 ++--
+ deeplabcut/gui/window.py                        | 10 +++++-----
+ 23 files changed, 51 insertions(+), 54 deletions(-)
+
+diff --git a/deeplabcut/__main__.py b/deeplabcut/__main__.py
+index 93b3f44b..3d9f6684 100644
+--- a/deeplabcut/__main__.py
++++ b/deeplabcut/__main__.py
+@@ -10,7 +10,7 @@
+ #
+ 
+ try:
+-    import PySide6
++    import qtpy
+ 
+     lite = False
+ except ModuleNotFoundError:
+diff --git a/deeplabcut/gui/__init__.py b/deeplabcut/gui/__init__.py
+index 484f1393..0dba5a20 100644
+--- a/deeplabcut/gui/__init__.py
++++ b/deeplabcut/gui/__init__.py
+@@ -11,7 +11,4 @@
+ 
+ import os
+ 
+-os.environ["QT_API"] = "pyside6"
+-import qtpy  # Necessary unused import to properly store the env variable
+-
+ BASE_DIR = os.path.dirname(__file__)
+diff --git a/deeplabcut/gui/components.py b/deeplabcut/gui/components.py
+index 6fc9cfa7..de83fba7 100644
+--- a/deeplabcut/gui/components.py
++++ b/deeplabcut/gui/components.py
+@@ -10,8 +10,8 @@
+ #
+ import os
+ 
+-from PySide6 import QtWidgets
+-from PySide6.QtCore import Qt, Slot
++from qtpy import QtWidgets
++from qtpy.QtCore import Qt
+ from deeplabcut.gui.dlc_params import DLCParams
+ from deeplabcut.gui.widgets import ConfigEditor
+ 
+diff --git a/deeplabcut/gui/launch_script.py b/deeplabcut/gui/launch_script.py
+index 6ada8641..9350edec 100644
+--- a/deeplabcut/gui/launch_script.py
++++ b/deeplabcut/gui/launch_script.py
+@@ -22,11 +22,11 @@ import sys
+ import os
+ import logging
+ 
+-import PySide6.QtWidgets as QtWidgets
++import qtpy.QtWidgets as QtWidgets
+ import qdarkstyle
+ from deeplabcut.gui import BASE_DIR
+-from PySide6.QtCore import Qt
+-from PySide6.QtGui import QIcon, QPixmap
++from qtpy.QtCore import Qt
++from qtpy.QtGui import QIcon, QPixmap
+ 
+ 
+ def launch_dlc():
+diff --git a/deeplabcut/gui/tabs/analyze_videos.py b/deeplabcut/gui/tabs/analyze_videos.py
+index e6088397..6daa3fa3 100644
+--- a/deeplabcut/gui/tabs/analyze_videos.py
++++ b/deeplabcut/gui/tabs/analyze_videos.py
+@@ -9,8 +9,8 @@
+ # Licensed under GNU Lesser General Public License v3.0
+ #
+ from functools import partial
+-from PySide6 import QtWidgets
+-from PySide6.QtCore import Qt
++from qtpy import QtWidgets
++from qtpy.QtCore import Qt
+ 
+ from deeplabcut.gui.utils import move_to_separate_thread
+ from deeplabcut.gui.widgets import ConfigEditor
+diff --git a/deeplabcut/gui/tabs/create_project.py b/deeplabcut/gui/tabs/create_project.py
+index 6eaf66fa..ba4479b7 100644
+--- a/deeplabcut/gui/tabs/create_project.py
++++ b/deeplabcut/gui/tabs/create_project.py
+@@ -17,8 +17,8 @@ from deeplabcut.gui import BASE_DIR
+ from deeplabcut.gui.dlc_params import DLCParams
+ from deeplabcut.gui.widgets import ClickableLabel, ItemSelectionFrame
+ 
+-from PySide6 import QtCore, QtWidgets
+-from PySide6.QtGui import QIcon
++from qtpy import QtCore, QtWidgets
++from qtpy.QtGui import QIcon
+ 
+ 
+ class ProjectCreator(QtWidgets.QDialog):
+diff --git a/deeplabcut/gui/tabs/create_training_dataset.py b/deeplabcut/gui/tabs/create_training_dataset.py
+index 7101b0e5..432d9b51 100644
+--- a/deeplabcut/gui/tabs/create_training_dataset.py
++++ b/deeplabcut/gui/tabs/create_training_dataset.py
+@@ -10,9 +10,9 @@
+ #
+ import os
+ 
+-from PySide6 import QtWidgets
+-from PySide6.QtCore import Qt
+-from PySide6.QtGui import QIcon
++from qtpy import QtWidgets
++from qtpy.QtCore import Qt
++from qtpy.QtGui import QIcon
+ 
+ from deeplabcut.gui.dlc_params import DLCParams
+ from deeplabcut.gui.components import (
+diff --git a/deeplabcut/gui/tabs/create_videos.py b/deeplabcut/gui/tabs/create_videos.py
+index d8299b94..4dce4ec9 100644
+--- a/deeplabcut/gui/tabs/create_videos.py
++++ b/deeplabcut/gui/tabs/create_videos.py
+@@ -8,8 +8,8 @@
+ #
+ # Licensed under GNU Lesser General Public License v3.0
+ #
+-from PySide6 import QtWidgets
+-from PySide6.QtCore import Qt
++from qtpy import QtWidgets
++from qtpy.QtCore import Qt
+ 
+ from deeplabcut.gui.components import (
+     BodypartListWidget,
+diff --git a/deeplabcut/gui/tabs/evaluate_network.py b/deeplabcut/gui/tabs/evaluate_network.py
+index 36389224..7ffd76c7 100644
+--- a/deeplabcut/gui/tabs/evaluate_network.py
++++ b/deeplabcut/gui/tabs/evaluate_network.py
+@@ -14,8 +14,8 @@ from matplotlib.backends.backend_qt5agg import (
+     FigureCanvasQTAgg as FigureCanvas,
+ )
+ from matplotlib.figure import Figure
+-from PySide6 import QtWidgets
+-from PySide6.QtCore import Qt
++from qtpy import QtWidgets
++from qtpy.QtCore import Qt
+ 
+ import deeplabcut
+ from deeplabcut.utils.auxiliaryfunctions import get_evaluation_folder
+diff --git a/deeplabcut/gui/tabs/extract_frames.py b/deeplabcut/gui/tabs/extract_frames.py
+index 52a6cd88..7385a62f 100644
+--- a/deeplabcut/gui/tabs/extract_frames.py
++++ b/deeplabcut/gui/tabs/extract_frames.py
+@@ -12,8 +12,8 @@ from functools import partial
+ from pathlib import Path
+ from typing import Union
+ 
+-from PySide6 import QtWidgets
+-from PySide6.QtCore import Qt
++from qtpy import QtWidgets
++from qtpy.QtCore import Qt
+ 
+ from deeplabcut.gui.dlc_params import DLCParams
+ from deeplabcut.gui.components import (
+diff --git a/deeplabcut/gui/tabs/extract_outlier_frames.py b/deeplabcut/gui/tabs/extract_outlier_frames.py
+index ac62911a..e3777d5c 100644
+--- a/deeplabcut/gui/tabs/extract_outlier_frames.py
++++ b/deeplabcut/gui/tabs/extract_outlier_frames.py
+@@ -8,8 +8,8 @@
+ #
+ # Licensed under GNU Lesser General Public License v3.0
+ #
+-from PySide6 import QtWidgets
+-from PySide6.QtCore import Qt
++from qtpy import QtWidgets
++from qtpy.QtCore import Qt
+ 
+ from deeplabcut.gui.dlc_params import DLCParams
+ from deeplabcut.gui.components import (
+diff --git a/deeplabcut/gui/tabs/label_frames.py b/deeplabcut/gui/tabs/label_frames.py
+index 4e9e7106..5525de1d 100644
+--- a/deeplabcut/gui/tabs/label_frames.py
++++ b/deeplabcut/gui/tabs/label_frames.py
+@@ -13,9 +13,8 @@ from __future__ import annotations
+ import os
+ from pathlib import Path
+ 
+-from PySide6 import QtWidgets
+-from PySide6.QtCore import Qt
+-
++from qtpy import QtWidgets
++from qtpy.QtCore import Qt
+ from deeplabcut.generate_training_dataset import check_labels
+ from deeplabcut.gui.components import DefaultTab
+ from deeplabcut.gui.widgets import launch_napari
+diff --git a/deeplabcut/gui/tabs/manage_project.py b/deeplabcut/gui/tabs/manage_project.py
+index 932adcf8..69be0146 100644
+--- a/deeplabcut/gui/tabs/manage_project.py
++++ b/deeplabcut/gui/tabs/manage_project.py
+@@ -9,8 +9,8 @@
+ # Licensed under GNU Lesser General Public License v3.0
+ #
+ import os
+-from PySide6.QtCore import Qt
+-from PySide6.QtWidgets import (
++from qtpy.QtCore import Qt
++from qtpy.QtWidgets import (
+     QPushButton,
+     QFileDialog,
+     QLabel,
+diff --git a/deeplabcut/gui/tabs/modelzoo.py b/deeplabcut/gui/tabs/modelzoo.py
+index 97ddc2fe..9b410d31 100644
+--- a/deeplabcut/gui/tabs/modelzoo.py
++++ b/deeplabcut/gui/tabs/modelzoo.py
+@@ -12,9 +12,10 @@ import os
+ from functools import partial
+ 
+ import deeplabcut
+-from PySide6 import QtWidgets
+-from PySide6.QtCore import Qt, Signal, QTimer, QRegularExpression
+-from PySide6.QtGui import QPixmap, QRegularExpressionValidator
++from qtpy import QtWidgets
++from qtpy.QtCore import Qt, Signal, QTimer, QRegularExpression
++from qtpy.QtGui import QPixmap, QRegularExpressionValidator
++
+ from deeplabcut.gui.components import (
+     DefaultTab,
+     VideoSelectionWidget,
+diff --git a/deeplabcut/gui/tabs/open_project.py b/deeplabcut/gui/tabs/open_project.py
+index 42985be6..d0e4d045 100644
+--- a/deeplabcut/gui/tabs/open_project.py
++++ b/deeplabcut/gui/tabs/open_project.py
+@@ -10,9 +10,9 @@
+ #
+ import os
+ 
+-from PySide6 import QtWidgets, QtCore
+-from PySide6.QtGui import QIcon
+-from PySide6.QtWidgets import QCheckBox
++from qtpy import QtWidgets, QtCore
++from qtpy.QtGui import QIcon
++from qtpy.QtWidgets import QCheckBox
+ 
+ 
+ class OpenProject(QtWidgets.QDialog):
+diff --git a/deeplabcut/gui/tabs/refine_tracklets.py b/deeplabcut/gui/tabs/refine_tracklets.py
+index e32d0bf9..7d9c6d75 100644
+--- a/deeplabcut/gui/tabs/refine_tracklets.py
++++ b/deeplabcut/gui/tabs/refine_tracklets.py
+@@ -10,8 +10,8 @@
+ #
+ import os
+ from pathlib import Path
+-from PySide6 import QtWidgets
+-from PySide6.QtCore import Qt
++from qtpy import QtWidgets
++from qtpy.QtCore import Qt
+ 
+ from deeplabcut.gui.widgets import ConfigEditor
+ from deeplabcut.gui.components import (
+diff --git a/deeplabcut/gui/tabs/train_network.py b/deeplabcut/gui/tabs/train_network.py
+index a4ffbcef..c2caae74 100644
+--- a/deeplabcut/gui/tabs/train_network.py
++++ b/deeplabcut/gui/tabs/train_network.py
+@@ -11,9 +11,9 @@
+ import os
+ from pathlib import Path
+ 
+-from PySide6 import QtWidgets
+-from PySide6.QtCore import Qt
+-from PySide6.QtGui import QIcon
++from qtpy import QtWidgets
++from qtpy.QtCore import Qt
++from qtpy.QtGui import QIcon
+ 
+ from deeplabcut.gui.components import (
+     DefaultTab,
+diff --git a/deeplabcut/gui/tabs/unsupervised_id_tracking.py b/deeplabcut/gui/tabs/unsupervised_id_tracking.py
+index ccea5ce3..e5cc1a3d 100644
+--- a/deeplabcut/gui/tabs/unsupervised_id_tracking.py
++++ b/deeplabcut/gui/tabs/unsupervised_id_tracking.py
+@@ -9,8 +9,8 @@
+ # Licensed under GNU Lesser General Public License v3.0
+ #
+ from functools import partial
+-from PySide6 import QtWidgets
+-from PySide6.QtCore import Qt
++from qtpy import QtWidgets
++from qtpy.QtCore import Qt
+ 
+ from deeplabcut.gui.components import (
+     DefaultTab,
+diff --git a/deeplabcut/gui/tabs/video_editor.py b/deeplabcut/gui/tabs/video_editor.py
+index 38be396f..12140ad1 100644
+--- a/deeplabcut/gui/tabs/video_editor.py
++++ b/deeplabcut/gui/tabs/video_editor.py
+@@ -10,8 +10,8 @@
+ #
+ import time
+ 
+-from PySide6 import QtWidgets
+-from PySide6.QtCore import Qt
++from qtpy import QtWidgets
++from qtpy.QtCore import Qt
+ 
+ from deeplabcut.gui.components import (
+     DefaultTab,
+diff --git a/deeplabcut/gui/tracklet_toolbox.py b/deeplabcut/gui/tracklet_toolbox.py
+index 9eb71dc1..0675f3c9 100644
+--- a/deeplabcut/gui/tracklet_toolbox.py
++++ b/deeplabcut/gui/tracklet_toolbox.py
+@@ -20,8 +20,8 @@ from deeplabcut.utils.auxfun_videos import VideoReader
+ from deeplabcut.utils.auxiliaryfunctions import attempt_to_make_folder
+ from matplotlib.path import Path
+ from matplotlib.widgets import Slider, LassoSelector, Button, CheckButtons, TextBox
+-from PySide6.QtWidgets import QMessageBox
+-from PySide6.QtCore import QMutex
++from qtpy.QtWidgets import QMessageBox
++from qtpy.QtCore import QMutex
+ 
+ 
+ class DraggablePoint:
+diff --git a/deeplabcut/gui/utils.py b/deeplabcut/gui/utils.py
+index cd5369fb..c9601266 100644
+--- a/deeplabcut/gui/utils.py
++++ b/deeplabcut/gui/utils.py
+@@ -8,7 +8,7 @@
+ #
+ # Licensed under GNU Lesser General Public License v3.0
+ #
+-from PySide6 import QtCore
++from qtpy import QtCore
+ 
+ 
+ class Worker(QtCore.QObject):
+diff --git a/deeplabcut/gui/widgets.py b/deeplabcut/gui/widgets.py
+index 4e16ab83..6886fae4 100644
+--- a/deeplabcut/gui/widgets.py
++++ b/deeplabcut/gui/widgets.py
+@@ -25,8 +25,8 @@ from matplotlib.backends.backend_qt5agg import (
+ from matplotlib.figure import Figure
+ from matplotlib.widgets import RectangleSelector, Button, LassoSelector
+ from queue import Queue
+-from PySide6 import QtCore, QtWidgets
+-from PySide6.QtGui import QStandardItemModel, QStandardItem, QCursor, QAction
++from qtpy import QtCore, QtWidgets
++from qtpy.QtGui import QStandardItemModel, QStandardItem, QCursor, QAction
+ from scipy.spatial import cKDTree as KDTree
+ from skimage import io
+ 
+diff --git a/deeplabcut/gui/window.py b/deeplabcut/gui/window.py
+index 2e815425..ff5fe09e 100644
+--- a/deeplabcut/gui/window.py
++++ b/deeplabcut/gui/window.py
+@@ -23,11 +23,11 @@ from deeplabcut.gui import BASE_DIR, components, utils
+ from deeplabcut.gui.tabs import *
+ from deeplabcut.gui.widgets import StreamReceiver, StreamWriter
+ from napari_deeplabcut import misc
+-from PySide6.QtWidgets import QMessageBox, QMenu, QWidget, QMainWindow
+-from PySide6 import QtCore
+-from PySide6.QtGui import QIcon, QAction
+-from PySide6 import QtWidgets, QtGui
+-from PySide6.QtCore import Qt, QTimer
++from qtpy.QtWidgets import QMessageBox, QMenu, QWidget, QMainWindow
++from qtpy import QtCore
++from qtpy.QtGui import QIcon, QAction
++from qtpy import QtWidgets, QtGui
++from qtpy.QtCore import Qt, QTimer
+ 
+ 
+ def _check_for_updates(silent=True):
+-- 
+2.43.0
+

@@ -1,0 +1,45 @@
+commit 242c018d568b508069b035f0c7e96bc67480ec80
+Author: Nicolas Évrard <nicoe@b2ck.com>
+Date:   Mon Dec 23 11:56:35 2024 +0100
+
+    Use an SSL Context when making a request to check the server version
+    
+    python 3.13 removed the cafile keyword argument thus we have to use an SSL
+    Context to use those
+    
+    Closes #13772
+
+diff --git a/tryton/tryton/common/common.py b/tryton/tryton/common/common.py
+index 17e0082e48..5b01c8d98e 100644
+--- a/tryton/tryton/common/common.py
++++ b/tryton/tryton/common/common.py
+@@ -10,6 +10,7 @@ import logging
+ import os
+ import platform
+ import re
++import ssl
+ import subprocess
+ import unicodedata
+ import xml.etree.ElementTree as ET
+@@ -41,10 +42,6 @@ import tryton.translate as translate
+ from tryton.cache import CacheDict
+ from tryton.config import CONFIG, PIXMAPS_DIR, SOUNDS_DIR, TRYTON_ICON
+ 
+-try:
+-    import ssl
+-except ImportError:
+-    ssl = None
+ import zipfile
+ 
+ from gi.repository import Gdk, GdkPixbuf, Gio, GLib, GObject, Gtk
+@@ -965,8 +962,8 @@ def check_version(box, version=__version__):
+ 
+     logger.info(_("Check URL: %s"), url)
+     try:
+-        urllib.request.urlopen(
+-            HeadRequest(url), timeout=5, cafile=rpc._CA_CERTS)
++        context = ssl.create_default_context(cafile=rpc._CA_CERTS)
++        urllib.request.urlopen(HeadRequest(url), timeout=5, context=context)
+     except (urllib.error.HTTPError, socket.timeout):
+         return True
+     except Exception:

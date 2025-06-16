@@ -1,0 +1,107 @@
+context:
+  name: bagels
+  version: "0.3.9"
+  python_min: "3.13"
+
+package:
+  name: ${{ name|lower }}
+  version: ${{ version }}
+
+source:
+  url: https://pypi.org/packages/source/${{ name[0] }}/${{ name }}/${{ name }}-${{ version }}.tar.gz
+  sha256: fbb3bb64d7f6909864004866b00e112917738a6fdf470871ea77b4e2f67d2d28
+  patches:
+    - change-xdg-package-name.patch
+
+build:
+  noarch: python
+  script: python -m pip install . -vv
+  number: 1
+  python:
+    entry_points: bagels = bagels.__main__:cli
+
+requirements:
+  host:
+    - python ${{ python_min }}.*
+    - pip
+    - hatchling
+  run:
+    - python >=${{ python_min }}
+    - aiohappyeyeballs <3.0,>=2.0
+    - aiohttp-jinja2 <2.0,>=1.0
+    - aiohttp <4.0,>=3.0
+    - aiosignal <2.0,>=1.0
+    - annotated-types <1.0,>=0.0
+    - attrs <25.0,>=24.0
+    - blinker <2.0,>=1.0
+    - click-default-group <2.0,>=1.2
+    - click <9.0,>=8.0
+    - frozenlist <2.0,>=1.0
+    - idna <4.0,>=3.0
+    - itsdangerous <3.0,>=2.0
+    - linkify-it-py <3.0,>=2.0
+    - markdown-it-py <4.0,>=3.0
+    - markupsafe <4.0,>=3.0
+    - mdit-py-plugins <1.0,>=0.4
+    - mdurl <1.0,>=0.1
+    - msgpack-python <2.0,>=1.0
+    - multidict <7.0,>=6.0
+    - numpy <3.0,>=2.0
+    - packaging <24.0,>=23.0
+    - platformdirs <5.0,>=4.0
+    - plotext <6.0,>=5.0
+    - propcache <1.0,>=0.2
+    - pydantic-core <3.0,>=2.0
+    - pydantic <3.0,>=2.0
+    - pygments <3.0,>=2.0
+    - python-dateutil <3.0,>=2.0
+    - pyyaml <7.0,>=6.0
+    - requests <3.0,>=2.0
+    - rich <14.0,>=13.0
+    - sqlalchemy <3.0,>=2.0
+    - textual <2.0,>=1.0
+    - tomli <3.0,>=2.0
+    - typing-extensions <5.0,>=4.0
+    - uc-micro-py <2.0,>=1.0
+    - werkzeug <4.0,>=3.0
+    - xdg <7.0,>=6.0
+    - yarl <2.0,>=1.0
+
+tests:
+  - script:
+      - bagels --help
+    requirements:
+      run:
+        - python ${{ python_min }}.*
+
+about:
+  homepage: https://github.com/EnhancedJax/Bagels
+  summary: 'Powerful expense tracker that lives in your terminal.'
+  description: |
+    Bagels expense tracker is a TUI application where you can track and analyse your money flow, with convenience oriented features and a complete interface.
+    Some notable features include:
+
+    - Accounts, (Sub)Categories, Splits, Transfers, Records
+
+    - Templates for Recurring Transactions
+
+    - Add Templated Record with Number Keys
+
+    - Clear Table Layout with Togglable Splits
+
+    - Transfer to and from Outside Tracked Accounts
+
+    - "Jump Mode" Navigation
+
+    - Less and Less Fields to Enter per Transaction, Powered by Transactions and Input Modes
+
+    - Insights
+
+    - Customizable Keybindings and Defaults, such as First Day of Week
+  license: GPL-3.0-only
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - claudiushaag
+    - EnhancedJax

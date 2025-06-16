@@ -280,7 +280,7 @@ index 17699c3074..4b2581a31d 100755
 +        LibName("BULLET", GetThirdpartyDir() + "lib/BulletSoftBody" + suffix)
  
  if (COMPILER=="GCC"):
-     PkgDisable("MIMALLOC") # no discernible benefit over glibc
+     PkgDisable("MIMALLOC") # no discernable benefit over glibc
 diff --git a/makepanda/makepandacore.py b/makepanda/makepandacore.py
 index 74a4307a29..336d776295 100644
 --- a/makepanda/makepandacore.py

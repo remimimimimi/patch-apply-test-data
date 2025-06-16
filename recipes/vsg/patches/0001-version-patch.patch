@@ -1,0 +1,32 @@
+From 10e8c4474e2ed9b87f04428d1f2e6f44cc42bf86 Mon Sep 17 00:00:00 2001
+From: Lorenzo Pirritano <lpirritano@anaconda.com>
+Date: Thu, 20 Mar 2025 21:52:52 +0100
+Subject: [PATCH] version-patch
+
+Patch pyproject.toml to use the dynamic version from the VERSION file rather than a git tag.
+
+This is because setuptools-git-versioning will not detect the version from the GitHub archive
+(not a repository, and therefore there is no tag).
+
+The file named VERSION with the correct version is created in the script section of the recipe.
+
+---
+ pyproject.toml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/pyproject.toml b/pyproject.toml
+index 0f56cea..dfb98e4 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -72,7 +72,7 @@ vsg = "vsg.__main__:main"
+ 
+ [tool.setuptools-git-versioning]
+ enabled = true
+-template = "{tag}"
++version_file = "VERSION"
+ 
+ [tool.setuptools.package-data]
+ "vsg.rules" = [
+-- 
+2.39.1
+

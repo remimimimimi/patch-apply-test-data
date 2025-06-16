@@ -13,7 +13,7 @@ source:
     - fix-utfcpp.patch
 
 build:
-  number: 0
+  number: 4
   skip: win
   script:
     content: python -m pip install . -vv --no-deps --no-build-isolation

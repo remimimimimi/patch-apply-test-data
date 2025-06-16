@@ -1,0 +1,13 @@
+diff --git a/tests/test_utils.py b/tests/test_utils.py
+index fa113e0..62dda7b 100644
+--- a/tests/test_utils.py
++++ b/tests/test_utils.py
+@@ -2,7 +2,7 @@ from time import sleep
+ 
+ import pytest
+ 
+-from src.hatch_cython.utils import memo, stale
++from hatch_cython.utils import memo, stale
+ 
+ 
+ def test_memo():

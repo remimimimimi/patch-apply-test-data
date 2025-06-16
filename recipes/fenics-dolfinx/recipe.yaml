@@ -3,7 +3,7 @@ context:
   version: 0.9.0
   major_minor: ${{ (version | split('.'))[:2] | join('.') }}.*
   ufl_version: "2024.2.*"
-  build: 12
+  build: 14
 
 recipe:
   name: ${{ name|lower }}
@@ -53,6 +53,7 @@ outputs:
             - petsc * ${{ scalar }}_*
             - slepc
         - libboost-devel
+        - hdf5 ${{ hdf5 }}.* mpi_${{ mpi }}_*
         - libscotch
         - libptscotch
         - pugixml
@@ -132,8 +133,8 @@ outputs:
               then: ${{ mpi }}
       host:
         - ${{ mpi | replace("impi", "impi-devel") }}
-        # # hdf5 shouldn't be needed here, but solver fails without it
-        # - hdf5 ${{ hdf5 }}.* mpi_${{ mpi }}_*
+        # hdf5 shouldn't be needed here, but solver fails without it
+        - hdf5 ${{ hdf5 }}.* mpi_${{ mpi }}_*
         - ${{ pin_subpackage("fenics-libdolfinx", exact=True) }}
         - python
         - pip

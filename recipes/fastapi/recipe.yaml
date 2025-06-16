@@ -1,0 +1,74 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/prefix-dev/recipe-format/main/schema.json
+schema_version: 1
+
+context:
+  version: "0.115.12"
+
+package:
+  name: fastapi
+  version: ${{ version }}
+
+source:
+  url: https://pypi.org/packages/source/f/fastapi/fastapi-${{ version }}.tar.gz
+  sha256: 1e2c2a2646905f9e83d32f04a3f86aff4a286669c6c950ca95b5fd68c2602681
+  patches:
+    # this ships a `bin/fastapi` which says to install `fastapi-cli`
+    # but as this recipe already depends on `fastapi-cli`, it clobbers the working one
+    - 0000-no-broken-cli.patch
+
+build:
+  number: 0
+  noarch: python
+  script:
+    - ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation --disable-pip-version-check
+
+requirements:
+  host:
+    - pdm-backend
+    - pip
+    - python ${{ python_min }}.*
+  run:
+    - python >=${{ python_min }}
+    # [project.dependencies]
+    - starlette >=0.40.0,<0.47.0
+    - typing_extensions >=4.8.0
+    - pydantic >=1.7.4,!=1.8,!=1.8.1,!=2.0.0,!=2.0.1,!=2.1.0,<3.0.0
+    # [project.optional-dependencies.standard]
+    - email_validator >=2.0.0
+    - fastapi-cli >=0.0.5
+    - httpx >=0.23.0
+    - jinja2 >=3.1.5
+    - python-multipart >=0.0.18
+    - uvicorn-standard >=0.12.0
+
+tests:
+  - python:
+      pip_check: true
+      python_version: ${{ python_min }}.*
+      imports:
+        - fastapi
+        - fastapi.dependencies
+        - fastapi.middleware
+        - fastapi.openapi
+        - fastapi.security
+  - requirements:
+      run:
+        - python ${{ python_min }}.*
+    script:
+      - fastapi --version
+      - fastapi --help
+
+about:
+  license: MIT
+  license_file: LICENSE
+  summary: FastAPI framework, high performance, easy to learn, fast to code, ready for production
+  homepage: https://github.com/fastapi/fastapi
+  repository: https://github.com/fastapi/fastapi
+  documentation: https://fastapi.tiangolo.com
+
+extra:
+  recipe-maintainers:
+    - dhirschfeld
+    - tiangolo
+    - synapticarbors
+    - bollwyvl

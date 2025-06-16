@@ -14,25 +14,25 @@ source:
     - 001-cargo.patch
 
 build:
-  number: 0
+  number: 1
   script:
     - if: unix
-      then: 
-       - export OPENSSL_DIR="$PREFIX"
-       - export OPENSSL_NO_VENDOR=1
+      then:
+        - export OPENSSL_DIR="$PREFIX"
+        - export OPENSSL_NO_VENDOR=1
       else:
-       - set OPENSSL_DIR=%LIBRARY_PREFIX% 
-       - set OPENSSL_NO_VENDOR=1
+        - set OPENSSL_DIR=%LIBRARY_PREFIX%
+        - set OPENSSL_NO_VENDOR=1
     - cargo-bundle-licenses --format yaml --output THIRDPARTY.yml
     - ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
 
 requirements:
   build:
     - if: build_platform != target_platform
-      then: 
-      - python
-      - cross-python_${{ target_platform }}
-      - maturin >=1.4,<2
+      then:
+        - python
+        - cross-python_${{ target_platform }}
+        - maturin >=1.4,<2
     - ${{ stdlib('c') }}
     - ${{ compiler('rust') }}
     - pkg-config
@@ -53,7 +53,7 @@ tests:
 about:
   summary: Speed up file transfers with the Hugging Face Hub.
   license: Apache-2.0
-  license_file: 
+  license_file:
     - LICENSE
     - THIRDPARTY.yml
   homepage: https://github.com/huggingface/hf_transfer

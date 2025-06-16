@@ -1,5 +1,5 @@
 diff --git i/CMakeLists.txt w/CMakeLists.txt
-index 911d9f9..801c9fa 100644
+index f27af9f..40fa617 100644
 --- i/CMakeLists.txt
 +++ w/CMakeLists.txt
 @@ -46,12 +46,8 @@ message(STATUS "Enable C++ trace: ${XGRAMMAR_ENABLE_CPPTRACE}")
@@ -17,7 +17,7 @@ index 911d9f9..801c9fa 100644
  endif()
  
 diff --git i/pyproject.toml w/pyproject.toml
-index 11fae7d..5f13c7b 100644
+index 4130e22..4968e4b 100644
 --- i/pyproject.toml
 +++ w/pyproject.toml
 @@ -21,7 +21,6 @@ dependencies = [
@@ -28,18 +28,3 @@ index 11fae7d..5f13c7b 100644
  ]
  dynamic = ["version"]
  
-diff --git i/tests/python/test_token_bitmask_operations.py w/tests/python/test_token_bitmask_operations.py
-index 72a7c8a..866ce38 100644
---- i/tests/python/test_token_bitmask_operations.py
-+++ w/tests/python/test_token_bitmask_operations.py
-@@ -59,10 +59,6 @@ def test_is_single_token_bitmask():
-     assert _is_single_token_bitmask(bitmask, vocab_size, batch_index) == (False, -1)
- 
- 
--test_is_single_token_bitmask()
--exit()
--
--
- @pytest.mark.parametrize("device", ("cpu", "cuda"))
- def test_apply_token_bitmask_inplace(device: str):
-     if device == "cuda" and not _is_cuda_available:

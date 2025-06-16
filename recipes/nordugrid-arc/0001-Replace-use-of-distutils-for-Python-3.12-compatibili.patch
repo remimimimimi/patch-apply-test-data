@@ -36,7 +36,7 @@ index eb7a1ddf8..0c3210c32 100644
          PYTHON_EXT_SUFFIX=""
      fi
 @@ -419,7 +419,7 @@ if test "$enables_python" = "yes"; then
-     AC_ARG_WITH(python-site-arch, AC_HELP_STRING([--with-python-site-arch=directory], [Directory where Python modules will be installed - defaults is to query the Python binary]))
+     AC_ARG_WITH(python-site-arch, AC_HELP_STRING([--with-python-site-arch=directory], [Direcory where Python modules will be installed - defaults is to query the Python binary]))
      if test "X$PYTHON_SITE_ARCH" = "X"; then
        if test "${build}" = "${host}"; then
 -        PYTHON_SITE_ARCH=`$PYTHON -c 'from distutils import sysconfig; print(sysconfig.get_python_lib(1,0,"${prefix}"))'`
@@ -45,7 +45,7 @@ index eb7a1ddf8..0c3210c32 100644
          PYTHON_SITE_ARCH="${libdir}/python${PYTHON_VERSION}/site-packages"
        fi
 @@ -429,7 +429,7 @@ if test "$enables_python" = "yes"; then
-     AC_ARG_WITH(python-site-lib, AC_HELP_STRING([--with-python-site-lib=directory], [Directory where Python modules will be installed - defaults is to query the Python binary]))
+     AC_ARG_WITH(python-site-lib, AC_HELP_STRING([--with-python-site-lib=directory], [Direcory where Python modules will be installed - defaults is to query the Python binary]))
      if test "X$PYTHON_SITE_LIB" = "X"; then
        if test "${build}" = "${host}"; then
 -        PYTHON_SITE_LIB=`$PYTHON -c 'from distutils import sysconfig; print(sysconfig.get_python_lib(0,0,"${prefix}"))'`
@@ -76,14 +76,14 @@ index eb7a1ddf8..0c3210c32 100644
 +    ALTPYTHON_EXT_SUFFIX=`$ALTPYTHON -c "import sysconfig; print(sysconfig.get_config_var('EXT_SUFFIX') or sysconfig.get_config_var('SO'))" | sed s/None//`
      AC_SUBST(ALTPYTHON_EXT_SUFFIX)
  
-     AC_ARG_WITH(altpython-site-arch, AC_HELP_STRING([--with-altpython-site-arch=directory], [Directory where Python modules will be installed - defaults is to query the Python binary]))
+     AC_ARG_WITH(altpython-site-arch, AC_HELP_STRING([--with-altpython-site-arch=directory], [Direcory where Python modules will be installed - defaults is to query the Python binary]))
      if test "X$ALTPYTHON_SITE_ARCH" = "X"; then
 -      ALTPYTHON_SITE_ARCH=`$ALTPYTHON -c 'from distutils import sysconfig; print(sysconfig.get_python_lib(1,0,"${prefix}"))'`
 +      ALTPYTHON_SITE_ARCH=`$ALTPYTHON -c 'import sysconfig; print(sysconfig.get_path("platlib"))'`
      fi
      AC_SUBST(ALTPYTHON_SITE_ARCH)
  
-     AC_ARG_WITH(altpython-site-lib, AC_HELP_STRING([--with-altpython-site-lib=directory], [Directory where Python modules will be installed - defaults is to query the Python binary]))
+     AC_ARG_WITH(altpython-site-lib, AC_HELP_STRING([--with-altpython-site-lib=directory], [Direcory where Python modules will be installed - defaults is to query the Python binary]))
      if test "X$ALTPYTHON_SITE_LIB" = "X"; then
 -      ALTPYTHON_SITE_LIB=`$ALTPYTHON -c 'from distutils import sysconfig; print(sysconfig.get_python_lib(0,0,"${prefix}"))'`
 +      ALTPYTHON_SITE_LIB=`$ALTPYTHON -c 'import sysconfig; print(sysconfig.get_path("purelib"))'`

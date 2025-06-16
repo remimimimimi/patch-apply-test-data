@@ -1,0 +1,51 @@
+context:
+  name: modal
+  version: 0.4.2.1
+
+package:
+  name: ${{ name|lower }}
+  version: ${{ version }}
+
+source:
+  url: https://pypi.org/packages/source/${{ name[0] }}/modAL-python/modAL-python-${{ version }}.tar.gz
+  sha256: b184dad157bbc58f92e688835a4885fd48413312661c1a24b9575bcfee9d9ad1
+  patches:
+    - relax-skorch.patch
+
+build:
+  number: 0
+  noarch: python
+  script: ${{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - python ${{ python_min }}.*
+    - setuptools
+  run:
+    - python >=${{ python_min }}
+    - numpy >=1.13
+    - scikit-learn >=0.18
+    - scipy >=0.18
+    - pandas
+    - skorch >=0.9.0
+
+tests:
+  - python:
+      imports:
+        - modAL
+        - modAL.models
+      pip_check: true
+      python_version: ${{ python_min }}.*
+
+about:
+  summary: A modular active learning framework for Python3
+  license: MIT
+  # License requested to be included as part of package
+  # https://github.com/modAL-python/modAL/issues/87
+  license_file: LICENSE
+  homepage: https://github.com/modAL-python/modAL
+
+extra:
+  recipe-maintainers:
+    - hadim

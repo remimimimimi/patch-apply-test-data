@@ -4,14 +4,14 @@ Date: Mon, 5 Aug 2024 14:59:43 +0200
 Subject: [PATCH] Got error about missing std::tolower on MSVC
 
 ---
- src/util/stringutil.cpp | 1 +
+ highs/util/stringutil.cpp | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/src/util/stringutil.cpp b/src/util/stringutil.cpp
-index 5b0de58e7..bdcd4d9de 100644
---- a/src/util/stringutil.cpp
-+++ b/src/util/stringutil.cpp
-@@ -12,6 +12,7 @@
+diff --git a/highs/util/stringutil.cpp b/highs/util/stringutil.cpp
+index 49bceaa0f..b5700d226 100644
+--- a/highs/util/stringutil.cpp
++++ b/highs/util/stringutil.cpp
+@@ -9,6 +9,7 @@
  
  #include <algorithm>  // for std::transform
  #include <cassert>

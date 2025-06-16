@@ -1,0 +1,27 @@
+From 5483e975035dcc40431690638ec201e8c430b74d Mon Sep 17 00:00:00 2001
+From: Matthew Feickert <matthew.feickert@cern.ch>
+Date: Mon, 5 May 2025 19:23:39 -0600
+Subject: [PATCH] MNT: Use range of allowed CMake versions
+
+* Modern use of cmake_minimum_required allows for a range of supported CMake
+  version policies to be used, which allows for newer versions of CMake to
+  be supported without errors as well as for more efficient builds with newer
+  releases.
+   - The optional <policy_max> argument was added in CMake v3.12 and is ignored
+     in older releases, which allows it to be used even if an older CMake
+     release / policy is used.
+   - In CMake v4.0 compatibility with versions of CMake older than 3.5 is removed.
+---
+ CMakeLists.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index d747454..47cfeea 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -1,4 +1,4 @@
+-cmake_minimum_required(VERSION 2.8)
++cmake_minimum_required(VERSION 3.5...4.0)
+ 
+ project(Delphes)
+ 

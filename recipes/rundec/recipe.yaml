@@ -1,0 +1,58 @@
+context:
+  name: "rundec"
+  version: "0.6"
+
+package:
+  name: ${{ name|lower }}
+  version: ${{ version }}
+
+source:
+  git: https://github.com/DavidMStraub/rundec-python.git
+  # tag: ${{ version }}
+  # Use exact commit as no tags for v0.5.1 or later (yet)
+  rev: "1b3006f03098ef4c6d44200ef643fede9c426cfe"
+  patches: add-pyproject-toml-for-build-system.patch
+
+build:
+  number: 0
+  script: ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+
+requirements:
+  build:
+    - ${{ stdlib('c') }}
+    - ${{ compiler('cxx') }}
+    - swig
+    - if: build_platform != target_platform
+      then:
+        - python
+        - cross-python_${{ target_platform }}
+  host:
+    - python
+    - setuptools
+    - pip
+  run:
+    - python
+
+tests:
+  - python:
+      imports:
+        - rundec
+      pip_check: true
+  - requirements:
+      run:
+        - python
+        - pip
+    script:
+      - pip list
+
+about:
+  homepage: https://github.com/DavidMStraub/rundec-python
+  summary: 'Python wrapper around CRunDec'
+  license: MIT
+  license_file: LICENSE
+  repository: https://github.com/DavidMStraub/rundec-python
+
+extra:
+  recipe-maintainers:
+    - DavidMStraub
+    - matthewfeickert

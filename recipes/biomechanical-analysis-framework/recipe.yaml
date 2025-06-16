@@ -3,7 +3,7 @@ context:
   cxx_name: "libbiomechanical-analysis-framework"
   python_name: "biomechanical-analysis-framework-python"
   kpi_name: "biomechanical-analysis-framework-kpi"
-  version: "0.2.0"
+  version: "0.2.1"
 
 recipe:
   name: ${{ name }}
@@ -11,12 +11,12 @@ recipe:
 
 source:
   - url: "https://github.com/ami-iit/${{ name }}/archive/refs/tags/v${{ version }}.tar.gz"
-    sha256: "8e239abb7ae7b79e25546432e872e4a942a95b335f0a6920fe11e7c562178fd4"
+    sha256: "18ae2dffac2f2724224c6f020f52ffd29115a35ed6c63a10d2ba8cafce248d4a"
     patches:
-      - 68.patch
+      - 81.patch
 
 build:
-  number: 0
+  number: 1
 
 outputs:
   - package:
@@ -35,10 +35,6 @@ outputs:
         - cmake
         - pkg-config
         - ninja
-        # Workaround for https://github.com/conda-forge/qt-main-feedstock/issues/273
-        - if: build_platform != target_platform
-          then:
-            - qt6-main
       host:
         - if: linux
           then: libgl-devel
@@ -50,7 +46,7 @@ outputs:
         - libbipedal-locomotion-framework
         - catch2
       run_exports:
-         - ${{ pin_subpackage(cxx_name, upper_bound='x.x.x') }}
+        - ${{ pin_subpackage(cxx_name, upper_bound='x.x.x') }}
     tests:
       - package_contents:
           lib:
@@ -60,12 +56,7 @@ outputs:
             - BiomechanicalAnalysis/IK/InverseKinematics.h
             - BiomechanicalAnalysis/Logging/Logger.h
       - script:
-          #  cmake-package-check does not work out of the box on linux-aarch64 due to https://github.com/conda-forge/qt-main-feedstock/issues/273
-          - if: target_platform != "linux-aarch64"
-            then:
-              - cmake-package-check BiomechanicalAnalysisFramework --targets BiomechanicalAnalysis::IK BiomechanicalAnalysis::ID BiomechanicalAnalysis::CommonConversions BiomechanicalAnalysis::Logging
-            else:
-              - echo "Skipping cmake-package-check BiomechanicalAnalysisFramework on linux-aarch64"
+          - cmake-package-check BiomechanicalAnalysisFramework --targets BiomechanicalAnalysis::IK BiomechanicalAnalysis::ID BiomechanicalAnalysis::CommonConversions BiomechanicalAnalysis::Logging
         requirements:
           run:
             - cmake-package-check
@@ -161,12 +152,7 @@ outputs:
         - ${{ pin_subpackage(cxx_name, upper_bound='x.x.x') }}
     tests:
       - script:
-          #  cmake-package-check does not work out of the box on linux-aarch64 due to https://github.com/conda-forge/qt-main-feedstock/issues/273
-          - if: target_platform != "linux-aarch64"
-            then:
-              - cmake-package-check BiomechanicalAnalysisFramework --targets BiomechanicalAnalysis::IK BiomechanicalAnalysis::ID BiomechanicalAnalysis::CommonConversions BiomechanicalAnalysis::Logging
-            else:
-              - echo "Skipping cmake-package-check BiomechanicalAnalysisFramework on linux-aarch64"
+          - cmake-package-check BiomechanicalAnalysisFramework --targets BiomechanicalAnalysis::IK BiomechanicalAnalysis::ID BiomechanicalAnalysis::CommonConversions BiomechanicalAnalysis::Logging
         requirements:
           run:
             - cmake-package-check

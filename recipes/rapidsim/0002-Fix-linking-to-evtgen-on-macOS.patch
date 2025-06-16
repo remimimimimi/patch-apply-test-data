@@ -1,0 +1,31 @@
+From 821d08bb3867cc77c103b9054e289d64b95b70b5 Mon Sep 17 00:00:00 2001
+From: Chris Burr <christopher.burr@cern.ch>
+Date: Mon, 29 Jun 2020 08:25:36 +0200
+Subject: [PATCH 2/3] Fix linking to evtgen on macOS
+
+---
+ CMakeLists.txt | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 4dbe550..0b9e201 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -71,7 +71,13 @@ if(DEFINED ENV{EVTGEN_ROOT})
+       message(INFO " Will not link against EvtGen : libEvtGenExternal not found")
+     else()
+       include_directories(${EVTGEN_ROOT})
+-      set(CMAKE_CXX_FLAGS    "${CMAKE_CXX_FLAGS} -DRAPID_EVTGEN -I$ENV{EVTGEN_ROOT} -unresolved-symbols=ignore-in-shared-libs")
++      set(CMAKE_CXX_FLAGS    "${CMAKE_CXX_FLAGS} -DRAPID_EVTGEN -I$ENV{EVTGEN_ROOT}")
++      if (CMAKE_CXX_COMPILER_ID MATCHES Clang AND CMAKE_SYSTEM_NAME MATCHES Darwin)
++        # Apple's build of lld doesn't support --unresolved-symbols
++        set(CMAKE_SHARED_LIBRARY_CREATE_CXX_FLAGS "${CMAKE_SHARED_LIBRARY_CREATE_CXX_FLAGS} -undefined dynamic_lookup")
++      else()
++        set(CMAKE_SHARED_LIBRARY_CREATE_CXX_FLAGS "${CMAKE_SHARED_LIBRARY_CREATE_CXX_FLAGS} --unresolved-symbols=ignore-in-shared-libs")
++      endif()
+       set(EVTGEN_FOUND TRUE)
+     endif()
+   endif()
+-- 
+2.45.0
+

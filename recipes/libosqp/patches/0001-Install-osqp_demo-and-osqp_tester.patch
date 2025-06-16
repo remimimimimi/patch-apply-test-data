@@ -1,0 +1,37 @@
+From ac310407533012ae48ec89a76061d3bfa5df087c Mon Sep 17 00:00:00 2001
+From: Adam Ehlers Nyholm Thomsen <adament@adament.net>
+Date: Sat, 19 Oct 2024 07:02:33 +0200
+Subject: [PATCH] Install osqp_demo and osqp_tester
+
+This makes them relocatable and allows running them in the test step or
+after a user has installed the package, according to h-vetinari they
+would be included in the artifact anyway for running tests locally.
+---
+ CMakeLists.txt       | 1 +
+ tests/CMakeLists.txt | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 9ed43468..4e5d1501 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -476,6 +476,7 @@ if(OSQP_BUILD_DEMO_EXE)
+                               ${osqplib_includes}
+                               ${OSQP_EXAMPLES_DIR}/problems )
+   target_link_libraries(osqp_demo osqpstatic ${osqplib_link_libs})
++  install(TARGETS osqp_demo)
+ 
+   if(OSQP_CODEGEN)
+     add_executable(osqp_codegen_demo ${OSQP_EXAMPLES_DIR}/osqp_codegen_demo.c)
+diff --git a/tests/CMakeLists.txt b/tests/CMakeLists.txt
+index 2959f86f..9a25b52e 100644
+--- a/tests/CMakeLists.txt
++++ b/tests/CMakeLists.txt
+@@ -116,6 +116,7 @@ if(OSQP_ALGEBRA_CUDA)
+ endif()
+ 
+ target_link_libraries(osqp_tester osqpstatic Catch2::Catch2 ${osqplib_link_libs})
++install(TARGETS osqp_tester)
+ 
+ add_test(NAME osqp_tester COMMAND osqp_tester)
+ 

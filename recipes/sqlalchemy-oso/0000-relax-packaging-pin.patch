@@ -1,0 +1,9 @@
+diff --git a/languages/python/sqlalchemy-oso/requirements.txt b/languages/python/sqlalchemy-oso/requirements.txt
+index 185f3dde03..3036da3d85 100644
+--- a/languages/python/sqlalchemy-oso/requirements.txt
++++ b/languages/python/sqlalchemy-oso/requirements.txt
+@@ -1,3 +1,3 @@
+ oso~=0.27.0
+ SQLAlchemy>=1.3.17,<3.0
+-packaging>=21.3,<24.0
++packaging>=21.3

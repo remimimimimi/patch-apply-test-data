@@ -1,0 +1,52 @@
+From d971f570f1323f23b8c4013801b596f3d32094e1 Mon Sep 17 00:00:00 2001
+From: jefromson <66144986+jefromson@users.noreply.github.com>
+Date: Sat, 13 May 2023 15:49:22 -0400
+Subject: [PATCH 8/9] add outputs for multi-animal model export
+
+I found that these outputs were required to successfully export a multi-animal tracking model.
+---
+ .../pose_estimation_tensorflow/export.py      | 26 +++++++++++++------
+ 1 file changed, 18 insertions(+), 8 deletions(-)
+
+diff --git a/deeplabcut/pose_estimation_tensorflow/export.py b/deeplabcut/pose_estimation_tensorflow/export.py
+index 50f9b6ac..60bc53d2 100644
+--- a/deeplabcut/pose_estimation_tensorflow/export.py
++++ b/deeplabcut/pose_estimation_tensorflow/export.py
+@@ -156,16 +156,26 @@ def load_model(cfg, shuffle=1, trainingsetindex=0, TFGPUinference=True, modelpre
+     dlc_cfg["num_outputs"] = cfg.get("num_outputs", dlc_cfg.get("num_outputs", 1))
+     dlc_cfg["batch_size"] = None
+ 
+-    # load network
+-    if TFGPUinference:
+-        sess, _, _ = predict.setup_GPUpose_prediction(dlc_cfg)
+-        output = ["concat_1"]
+-    else:
++    if 'multi-animal' in dlc_cfg['dataset_type']:
+         sess, _, _ = predict.setup_pose_prediction(dlc_cfg)
+-        if dlc_cfg["location_refinement"]:
+-            output = ["Sigmoid", "pose/locref_pred/block4/BiasAdd"]
++        output = [
++            'Sigmoid',
++            'pose/locref_pred/block4/BiasAdd',
++            'pose/pairwise_pred/block4/BiasAdd',
++            'Cast_2'
++        ]
++
++    else:
++        # load network
++        if TFGPUinference:
++            sess, _, _ = predict.setup_GPUpose_prediction(dlc_cfg)
++            output = ["concat_1"]
+         else:
+-            output = ["Sigmoid", "pose/part_pred/block4/BiasAdd"]
++            sess, _, _ = predict.setup_pose_prediction(dlc_cfg)
++            if dlc_cfg["location_refinement"]:
++                output = ["Sigmoid", "pose/locref_pred/block4/BiasAdd"]
++            else:
++                output = ["Sigmoid", "pose/part_pred/block4/BiasAdd"]
+ 
+     input = tf.compat.v1.get_default_graph().get_operations()[0].name
+ 
+-- 
+2.43.0
+

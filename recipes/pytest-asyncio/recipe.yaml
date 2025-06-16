@@ -1,0 +1,72 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/prefix-dev/recipe-format/main/schema.json
+schema_version: 1
+
+context:
+  version: "1.0.0"
+
+package:
+  name: pytest-asyncio
+  version: ${{ version }}
+
+source:
+  - url: https://pypi.org/packages/source/p/pytest-asyncio/pytest_asyncio-${{ version }}.tar.gz
+    sha256: d15463d13f4456e1ead2594520216b225a16f781e144f8fdf6c5bb4667c48b3f
+    target_directory: dist
+    patches:
+      - 0000-no-setuptools-77.patch
+  - url: https://github.com/pytest-dev/pytest-asyncio/archive/refs/tags/v${{ version }}.tar.gz
+    sha256: fd0235c0c60badfb2f845942d19c54ce0280d1cea073ec1ec36037321c900fd8
+    target_directory: src
+
+build:
+  number: 0
+  noarch: python
+  script:
+    - cd dist
+    - ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation --disable-pip-version-check
+
+requirements:
+  host:
+    - pip
+    - python ${{ python_min }}.*
+    - setuptools
+    - setuptools-scm >=6.2
+  run:
+    - pytest >=8.2,<9
+    - python >=${{ python_min }}
+    - typing_extensions >=4.12
+
+tests:
+  - python:
+      pip_check: true
+      python_version:
+        - ${{ python_min }}.*
+        - 3.13.*
+      imports: pytest_asyncio
+  - files:
+      recipe:
+        - run_test.py
+      source:
+        - src/tests/
+        - src/setup.cfg
+    requirements:
+      run:
+        - coverage
+        - hypothesis >=5.7.1
+        - pytest-trio
+        - python ${{ python_min }}.*
+    script:
+      interpreter: python
+      file: run_test.py
+
+about:
+  license: Apache-2.0
+  license_file: dist/LICENSE
+  summary: Pytest support for asyncio
+  homepage: http://github.com/pytest-dev/pytest-asyncio
+  repository: https://github.com/pytest-dev/pytest-asyncio
+
+extra:
+  recipe-maintainers:
+    - sodre
+    - bollwyvl
