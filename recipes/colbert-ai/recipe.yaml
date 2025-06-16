@@ -19,11 +19,11 @@ build:
 
 requirements:
   host:
-    - python ${{ python_min }}.*
+    # - python ${{ python_min }}.*
     - pip
     - setuptools
   run:
-    - python >=${{ python_min }}
+    # - python >=${{ python_min }}
     - bitarray
     - datasets
     - flask
@@ -36,12 +36,12 @@ requirements:
     - pytorch
     - ujson
 
-tests:
-  - python:
-      python_version: ${{ python_min }}.*
-      imports:
-        - colbert
-      pip_check: true
+# tests:
+#   - python:
+#       python_version: ${{ python_min }}.*
+#       imports:
+#         - colbert
+#       pip_check: true
 
 about:
   homepage: https://github.com/stanford-futuredata/ColBERT

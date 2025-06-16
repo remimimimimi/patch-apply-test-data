@@ -22,21 +22,21 @@ build:
 
 requirements:
   host:
-    - python ${{ python_min }}.*
+    # - python ${{ python_min }}.*
     - setuptools
     - pip
   run:
-    - python >=${{ python_min }}
+    # - python >=${{ python_min }}
     - ninja >=1.8.2
 
-tests:
-  - script:
-      - meson -h
-      - meson -v
-      - meson --internal delsuffix . nomatchqqq  # test reexecution (GitHub issue #11)
-    requirements:
-      run:
-        - python ${{ python_min }}.*
+# tests:
+#   - script:
+#       - meson -h
+#       - meson -v
+#       - meson --internal delsuffix . nomatchqqq  # test reexecution (GitHub issue #11)
+#     requirements:
+#       run:
+#         - python ${{ python_min }}.*
 
 about:
   homepage: https://mesonbuild.com

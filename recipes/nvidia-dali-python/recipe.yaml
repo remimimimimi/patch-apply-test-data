@@ -73,7 +73,7 @@ requirements:
         - libcurand-dev
         - libnpp-dev
         - libnvjpeg-dev
-    - cuda-version ${{ cuda_compiler_version }}.*
+    # - cuda-version ${{ cuda_compiler_version }}.*
     - aws-sdk-cpp
     - cfitsio
     - cutlass

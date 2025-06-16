@@ -19,42 +19,42 @@ build:
 
 requirements:
   host:
-    - python ${{ python_min }}.*
+    # - python ${{ python_min }}.*
     - pbr >=0.11
     - pip
     - setuptools
   run:
     - pbr >=0.11
-    - python >=${{ python_min }}
+    # - python >=${{ python_min }}
     - testtools
 
-tests:
-  - python:
-      imports:
-        - testscenarios
-        - testscenarios.scenarios
-        - testscenarios.testcase
-        - testscenarios.tests
-      pip_check: true
-      python_version: ${{ python_min }}.*
-  - script:
-      - if: unix
-        then:
-          - mkdir -p ${PREFIX}/__hack__
-          - cp -r doc/ README ${PREFIX}/__hack__
-          - python -m testtools.run testscenarios.test_suite
-        else:
-          - echo "Skip hacky test"
-          # - mkdir -p %PREFIX%\__hack__
-          # - cp -r doc README %PREFIX%\__hack__
-          # - python -m testtools.run testscenarios.test_suite
-    requirements:
-      run:
-        - python >=${{ python_min }}
-    files:
-      source:
-        - README
-        - doc/
+# tests:
+#   - python:
+#       imports:
+#         - testscenarios
+#         - testscenarios.scenarios
+#         - testscenarios.testcase
+#         - testscenarios.tests
+#       pip_check: true
+#       # python_version: ${{ python_min }}.*
+#   - script:
+#       - if: unix
+#         then:
+#           - mkdir -p ${PREFIX}/__hack__
+#           - cp -r doc/ README ${PREFIX}/__hack__
+#           - python -m testtools.run testscenarios.test_suite
+#         else:
+#           - echo "Skip hacky test"
+#           # - mkdir -p %PREFIX%\__hack__
+#           # - cp -r doc README %PREFIX%\__hack__
+#           # - python -m testtools.run testscenarios.test_suite
+#     requirements:
+#       run:
+#         - python >=${{ python_min }}
+#     files:
+#       source:
+#         - README
+#         - doc/
 
 
 

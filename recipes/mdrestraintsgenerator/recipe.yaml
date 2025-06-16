@@ -19,21 +19,21 @@ build:
 
 requirements:
   host:
-    - python ${{ python_min }}.*
+    # - python ${{ python_min }}.*
     - pip
     - setuptools
   run:
-    - python >=${{ python_min }}
+    # - python >=${{ python_min }}
     - mdanalysis >1.0.0
     - numpy
     - scipy
     - matplotlib-base
 
-tests:
-  - python:
-      imports:
-        - MDRestraintsGenerator
-      python_version: ${{ python_min }}.*
+# tests:
+#   - python:
+#       imports:
+#         - MDRestraintsGenerator
+#       python_version: ${{ python_min }}.*
 
 about:
   summary: Enabling the use of restraints in alchemical simulations

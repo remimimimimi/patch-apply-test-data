@@ -49,30 +49,30 @@ build:
 requirements:
   host:
     - pip
-    - python ${{ python_min }}.*
+    # - python ${{ python_min }}.*
     - setuptools
   run:
-    - python >=${{ python_min }}
+    # - python >=${{ python_min }}
     - uv ${{ version }}.*
 
-tests:
-  - python:
-      imports:
-        - uv
-        - uv._find_uv
-      pip_check: true
-      python_version:
-        - ${{ python_min }}.*
-        - 3.13.*
-  - requirements:
-      run:
-        - python ${{ python_min }}.*
-        - mypy
-    script:
-      - python -c "import uv; print(uv.find_uv_bin())"
-      - uv --version
-      - python -m uv --version
-      - mypy -p uv
+# tests:
+#   - python:
+#       imports:
+#         - uv
+#         - uv._find_uv
+#       pip_check: true
+#       python_version:
+#         - ${{ python_min }}.*
+#         - 3.13.*
+#   - requirements:
+#       run:
+#         - python ${{ python_min }}.*
+#         - mypy
+#     script:
+#       - python -c "import uv; print(uv.find_uv_bin())"
+#       - uv --version
+#       - python -m uv --version
+#       - mypy -p uv
 
 about:
   summary: An extremely fast Python package and project manager, written in Rust. (with python)

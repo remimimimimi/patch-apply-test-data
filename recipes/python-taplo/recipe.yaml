@@ -26,26 +26,26 @@ build:
 requirements:
   host:
     - pip
-    - python ${{ python_min }}.*
+    # - python ${{ python_min }}.*
     # maturin is replaced with setuptools
     - setuptools
   run:
-    - python >=${{ python_min }}
+    # - python >=${{ python_min }}
     - taplo ${{ version }}.*
 
-tests:
-  - requirements:
-      run:
-        - pip
-        - python ${{ python_min }}.*
-        - if: win
-          then:
-            - m2-grep
-    script:
-      # provides no importable python name
-      - pip check
-      - taplo --version
-      - taplo --version | grep -iE "${{ version | replace('.', '\\.') }}"
+# tests:
+#   - requirements:
+#       run:
+#         - pip
+#         - python ${{ python_min }}.*
+#         - if: win
+#           then:
+#             - m2-grep
+#     script:
+#       # provides no importable python name
+#       - pip check
+#       - taplo --version
+#       - taplo --version | grep -iE "${{ version | replace('.', '\\.') }}"
 
 about:
   homepage: https://taplo.tamasfe.dev

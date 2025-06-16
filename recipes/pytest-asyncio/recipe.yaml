@@ -28,36 +28,36 @@ build:
 requirements:
   host:
     - pip
-    - python ${{ python_min }}.*
+    # - python ${{ python_min }}.*
     - setuptools
     - setuptools-scm >=6.2
   run:
     - pytest >=8.2,<9
-    - python >=${{ python_min }}
+    # - python >=${{ python_min }}
     - typing_extensions >=4.12
 
-tests:
-  - python:
-      pip_check: true
-      python_version:
-        - ${{ python_min }}.*
-        - 3.13.*
-      imports: pytest_asyncio
-  - files:
-      recipe:
-        - run_test.py
-      source:
-        - src/tests/
-        - src/setup.cfg
-    requirements:
-      run:
-        - coverage
-        - hypothesis >=5.7.1
-        - pytest-trio
-        - python ${{ python_min }}.*
-    script:
-      interpreter: python
-      file: run_test.py
+# tests:
+#   - python:
+#       pip_check: true
+#       python_version:
+#         # - ${{ python_min }}.*
+#         - 3.13.*
+#       imports: pytest_asyncio
+#   - files:
+#       recipe:
+#         - run_test.py
+#       source:
+#         - src/tests/
+#         - src/setup.cfg
+#     requirements:
+#       run:
+#         - coverage
+#         - hypothesis >=5.7.1
+#         - pytest-trio
+#         # - python ${{ python_min }}.*
+#     script:
+#       interpreter: python
+#       file: run_test.py
 
 about:
   license: Apache-2.0

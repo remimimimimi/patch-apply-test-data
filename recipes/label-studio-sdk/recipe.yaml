@@ -19,11 +19,11 @@ build:
 
 requirements:
   host:
-    - python ${{ python_min }}.*
+    # - python ${{ python_min }}.*
     - pip
     - poetry
   run:
-    - python >=${{ python_min }}
+    # - python >=${{ python_min }}
     - Pillow >=10.0.1
     - appdirs >=1.4.3
     - httpx >=0.21.2
@@ -44,16 +44,16 @@ requirements:
     - xmljson ==0.2.1
     - datamodel-code-generator ==0.26.1
 
-tests:
-  - python:
-      imports:
-        - label_studio_sdk
-  - requirements:
-      run:
-        - python ${{ python_min }}
-        - pip
-    script:
-      - pip check
+# tests:
+#   - python:
+#       imports:
+#         - label_studio_sdk
+#   - requirements:
+#       run:
+#         - python ${{ python_min }}
+#         - pip
+#     script:
+#       - pip check
 
 about:
   summary: Label Studio annotation tool

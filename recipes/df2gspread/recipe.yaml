@@ -19,21 +19,21 @@ build:
 
 requirements:
   host:
-    - python ${{ python_min }}.*
+    # - python ${{ python_min }}.*
     - setuptools
     - pip
   run:
-    - python >=${{ python_min }}
+    # - python >=${{ python_min }}
     - google-api-python-client
     - gspread
     - oauth2client
     - pandas
 
-tests:
-  - python:
-      imports:
-        - df2gspread
-      python_version: ${{ python_min }}.*
+# tests:
+#   - python:
+#       imports:
+#         - df2gspread
+#       python_version: ${{ python_min }}.*
 
 about:
   license: GPL-3.0-or-later

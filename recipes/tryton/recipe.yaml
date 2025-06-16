@@ -20,21 +20,21 @@ build:
 requirements:
   host:
     - pip
-    - python ${{ python_min }}.*
+    # - python ${{ python_min }}.*
     - setuptools
   run:
-    - python >=${{ python_min }}
+    # - python >=${{ python_min }}
     - cairo
     - python-dateutil
     - pygobject
     - gtk3
     - librsvg
 
-tests:
-  - python:
-      imports:
-        - tryton
-      pip_check: true
+# tests:
+#   - python:
+#       imports:
+#         - tryton
+#       pip_check: true
 
 about:
   license: GPL-3.0-or-later

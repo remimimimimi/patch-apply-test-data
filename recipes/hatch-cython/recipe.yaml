@@ -19,11 +19,11 @@ build:
 
 requirements:
   host:
-    - python ${{ python_min }}.*
+    # - python ${{ python_min }}.*
     - pip
     - hatchling
   run:
-    - python >=${{ python_min }}
+    # - python >=${{ python_min }}
     - cython
     - hatch
     - hatchling
@@ -50,7 +50,7 @@ tests:
         - if: osx
           then: cctools
         - llvm-openmp
-        - python ${{ python_min }}.*
+        # - python ${{ python_min }}.*
         - pytest
         - toml
         - numpy

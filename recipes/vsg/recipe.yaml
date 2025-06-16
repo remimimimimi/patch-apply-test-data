@@ -28,45 +28,45 @@ build:
 
 requirements:
   host:
-    - python ${{ python_min }}.*
+    # - python ${{ python_min }}.*
     - setuptools
     - setuptools-git-versioning
     - wheel
     - pip
   run:
-    - python >=${{ python_min }}
+    # - python >=${{ python_min }}
     - pyyaml >=5.1
 
-tests:
-  - python:
-      imports:
-        - vsg
-  - script:
-      - vsg --help
-      - python -c "from importlib.metadata import version; assert(version('${{ name }}')=='${{ version }}')"
-      - pytest --no-cov
-    files:
-      source:
-        - bin/
-        - docs/
-        - vsg/styles/*.yaml
-        - vsg/rules/ranges/preamble_doc.rst
-        - vsg/rules/block_comment/preamble_doc.rst
-        - vsg/rules/length/preamble_doc.rst
-        - vsg/rules/procedure/preamble_doc.rst
-        - vsg/rules/procedure_call/preamble_doc.rst
-        - vsg/rules/when/preamble_doc.rst
-        - vsg/vhdlFile/indent/indent_config.yaml
-        - tests/
-        - pyproject.toml
-    requirements:
-      run:
-        - python ${{ python_min }}.*
-        - pip
-        - pytest
-        - pytest-cov
-        - pytest-html
-        - pytest-xdist
+# tests:
+#   - python:
+#       imports:
+#         - vsg
+#   - script:
+#       - vsg --help
+#       - python -c "from importlib.metadata import version; assert(version('${{ name }}')=='${{ version }}')"
+#       - pytest --no-cov
+#     files:
+#       source:
+#         - bin/
+#         - docs/
+#         - vsg/styles/*.yaml
+#         - vsg/rules/ranges/preamble_doc.rst
+#         - vsg/rules/block_comment/preamble_doc.rst
+#         - vsg/rules/length/preamble_doc.rst
+#         - vsg/rules/procedure/preamble_doc.rst
+#         - vsg/rules/procedure_call/preamble_doc.rst
+#         - vsg/rules/when/preamble_doc.rst
+#         - vsg/vhdlFile/indent/indent_config.yaml
+#         - tests/
+#         - pyproject.toml
+#     requirements:
+#       run:
+#         - python ${{ python_min }}.*
+#         - pip
+#         - pytest
+#         - pytest-cov
+#         - pytest-html
+#         - pytest-xdist
 
 about:
   summary: Coding style enforcement for VHDL

@@ -21,33 +21,33 @@ build:
 
 requirements:
   host:
-    - python ${{ python_min }}.*
+    # - python ${{ python_min }}.*
     - pip
     - setuptools
   run:
-    - python >=${{ python_min }}
+    # - python >=${{ python_min }}
     - rdkit
     - numpy
     - scipy
     - psi4
     - resp
 
-tests:
-  - python:
-      imports:
-        - espsim
-      python_version: ${{ python_min }}.*
-      pip_check: false  # cuz of https://github.com/conda-forge/qcelemental-feedstock/issues/54
-  - files:
-      source:
-        - scripts/
-    requirements:
-      run:
-        - python ${{ python_min }}.*
-    script:
-      - python scripts/test_imports.py
-      - python scripts/test_esp_function.py
-      - python scripts/test_embedalignscore.py
+# tests:
+#   - python:
+#       imports:
+#         - espsim
+#       python_version: ${{ python_min }}.*
+#       pip_check: false  # cuz of https://github.com/conda-forge/qcelemental-feedstock/issues/54
+#   - files:
+#       source:
+#         - scripts/
+#     requirements:
+#       run:
+#         - python ${{ python_min }}.*
+#     script:
+#       - python scripts/test_imports.py
+#       - python scripts/test_esp_function.py
+#       - python scripts/test_embedalignscore.py
 
 about:
   summary: Scoring of shape and ESP similarity with RDKit

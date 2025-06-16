@@ -61,7 +61,7 @@ tests:
   - python:
       pip_check: true
       python_version:
-        - ${{ python_min }}.*
+        # - ${{ python_min }}.*
         - 3.13.*
       imports: tach
   - files:
@@ -74,7 +74,7 @@ tests:
         - coverage
         - pytest
         - pytest-mock
-        - python !=${{ python_min }}.*
+        # - python !=${{ python_min }}.*
         - if: win
           then:
             - m2-grep

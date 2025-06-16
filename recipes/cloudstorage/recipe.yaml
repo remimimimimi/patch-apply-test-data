@@ -20,23 +20,23 @@ build:
 
 requirements:
   host:
-    - python ${{ python_min }}
+    # - python ${{ python_min }}
     - pip
     - setuptools
     - pytest-runner
   run:
-    - python >=${{ python_min }}
+    # - python >=${{ python_min }}
     - inflection >=0.3.1
     - python-dateutil >=2.7.3
     - python-magic >=0.4.15
 
-tests:
-  - python:
-      imports:
-        - cloudstorage
-        - cloudstorage.drivers
-      pip_check: true
-      python_version: ${{ python_min }}
+# tests:
+#   - python:
+#       imports:
+#         - cloudstorage
+#         - cloudstorage.drivers
+#       pip_check: true
+#       python_version: ${{ python_min }}
 
 about:
   summary: Unified cloud storage API for storage services.

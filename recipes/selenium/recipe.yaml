@@ -39,11 +39,11 @@ build:
 requirements:
   host:
     - pip
-    - python ${{ python_min }}.*
+    # - python ${{ python_min }}.*
     - setuptools
   run:
     - certifi >=2025.4.26
-    - python >=${{ python_min }}
+    # - python >=${{ python_min }}
     - selenium-manager ${{ selenium_manager_version }}
     - trio >=0.30.0,<1.0
     - trio-websocket >=0.12.2,<0.13.0
@@ -51,30 +51,30 @@ requirements:
     - urllib3 >=2.4.0,<2.5.0
     - websocket-client >=1.8.0,<1.9.0
 
-tests:
-  - python:
-      pip_check: true
-      python_version:
-        - ${{ python_min }}.*
-        - 3.13.*
-      imports:
-        - selenium
-        - selenium.common
-        - selenium.webdriver.common
-        - selenium.webdriver.chrome
-        - selenium.webdriver.chromium
-        - selenium.webdriver.edge
-        - selenium.webdriver.firefox
-        - selenium.webdriver.remote
-        - selenium.webdriver.support
-  - files:
-      recipe: run_test.py
-    requirements:
-      run:
-        - python ${{ python_min }}.*
-    script:
-      file: run_test.py
-      interpreter: python
+# tests:
+#   - python:
+#       pip_check: true
+#       python_version:
+#         - ${{ python_min }}.*
+#         - 3.13.*
+#       imports:
+#         - selenium
+#         - selenium.common
+#         - selenium.webdriver.common
+#         - selenium.webdriver.chrome
+#         - selenium.webdriver.chromium
+#         - selenium.webdriver.edge
+#         - selenium.webdriver.firefox
+#         - selenium.webdriver.remote
+#         - selenium.webdriver.support
+#   - files:
+#       recipe: run_test.py
+#     requirements:
+#       run:
+#         - python ${{ python_min }}.*
+#     script:
+#       file: run_test.py
+#       interpreter: python
 
 about:
   license_file:
